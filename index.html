@@ -13,6 +13,27 @@
             background-color: #f8f8f8;
             color: #333;
         }
+        /* Estilos para o modal/caixa de mensagem */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50; /* Verde para sucesso */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+            z-index: 1000;
+        }
+        .message-box.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -40,7 +61,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </button>
                 <!-- Menu Hamburger para Mobile -->
-                <button class="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none">
+                <button class="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none" id="mobile-menu-button">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
             </div>
@@ -123,7 +144,7 @@
                         <p class="text-gray-600 mt-1">Design minimalista, ideal para qualquer ambiente.</p>
                         <div class="flex items-center justify-between mt-3">
                             <span class="text-xl font-bold text-gray-900">R$ 129,90</span>
-                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Adicionar</button>
+                            <button class="add-to-cart-btn bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors" data-product-name="Vaso Cerâmico Moderno">Adicionar</button>
                         </div>
                     </div>
                 </div>
@@ -135,7 +156,7 @@
                         <p class="text-gray-600 mt-1">Toque de luz e sofisticação.</p>
                         <div class="flex items-center justify-between mt-3">
                             <span class="text-xl font-bold text-gray-900">R$ 249,00</span>
-                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Adicionar</button>
+                            <button class="add-to-cart-btn bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors" data-product-name="Luminária de Mesa LED">Adicionar</button>
                         </div>
                     </div>
                 </div>
@@ -147,7 +168,7 @@
                         <p class="text-gray-600 mt-1">Aconchego e estilo para seu sofá.</p>
                         <div class="flex items-center justify-between mt-3">
                             <span class="text-xl font-bold text-gray-900">R$ 189,50</span>
-                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Adicionar</button>
+                            <button class="add-to-cart-btn bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors" data-product-name="Manta Decorativa Macaron">Adicionar</button>
                         </div>
                     </div>
                 </div>
@@ -159,7 +180,7 @@
                         <p class="text-gray-600 mt-1">Conforto com um toque de arte.</p>
                         <div class="flex items-center justify-between mt-3">
                             <span class="text-xl font-bold text-gray-900">R$ 79,90</span>
-                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Adicionar</button>
+                            <button class="add-to-cart-btn bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors" data-product-name="Almofada Geométrica Abstrata">Adicionar</button>
                         </div>
                     </div>
                 </div>
@@ -224,12 +245,10 @@
         </div>
     </footer>
 
+    <!-- Caixa de Mensagem (Toast/Notificação) -->
+    <div id="messageBox" class="message-box"></div>
+
     <script>
-        // Simples script para o menu mobile (apenas toggle de visibilidade)
-        document.querySelector('header button.md\\:hidden').addEventListener('click', function() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        });
-    </script>
-</body>
-</html>
+        // Script para o menu mobile: alterna a visibilidade
+        document.getElementById('mobile-menu-button').addEventListener('click'), function() {
+            const mobileMen}
