@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Casa Decor - Decorações Inspiradoras</title>
+    <!-- Incluir Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Cabeçalho -->
+    <header class="bg-white shadow-sm py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center flex-wrap">
+            <!-- Logo/Nome do Site -->
+            <a href="#" class="text-3xl font-bold text-gray-800 tracking-tight">Minha Casa Decor</a>
+            
+            <!-- Navegação Principal -->
+            <nav class="hidden md:flex space-x-6">
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Início</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Produtos</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Categorias</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Inspiração</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Contato</a>
+            </nav>
+
+            <!-- Ícones de Ação (Carrinho e Usuário - apenas visuais) -->
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-gray-900 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H3m4 8V19a2 2 0 002 2h10a2 2 0 002-2V13m-4 0l-2 2m0 0l-2-2"></path></svg>
+                </button>
+                <button class="text-gray-600 hover:text-gray-900 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </button>
+                <!-- Menu Hamburger para Mobile -->
+                <button class="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Menu Mobile (apenas visual, não funcional sem JS) -->
+        <div class="md:hidden mt-4 px-4 hidden" id="mobile-menu">
+            <nav class="flex flex-col space-y-2">
+                <a href="#" class="block text-gray-600 hover:text-gray-900 font-medium transition-colors py-2">Início</a>
+                <a href="#" class="block text-gray-600 hover:text-gray-900 font-medium transition-colors py-2">Produtos</a>
+                <a href="#" class="block text-gray-600 hover:text-gray-900 font-medium transition-colors py-2">Categorias</a>
+                <a href="#" class="block text-gray-600 hover:text-gray-900 font-medium transition-colors py-2">Inspiração</a>
+                <a href="#" class="block text-gray-600 hover:text-gray-900 font-medium transition-colors py-2">Contato</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Seção Hero/Banner Principal -->
+        <section class="bg-gray-100 py-20 text-center relative overflow-hidden rounded-b-lg shadow-md mx-4 md:mx-auto md:max-w-7xl mt-4">
+            <div class="absolute inset-0 bg-cover bg-center opacity-70" style="background-image: url('https://placehold.co/1200x500/A0A0A0/ffffff?text=Espaço+Moderno');"></div>
+            <div class="relative z-10 p-8">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 drop-shadow-lg">Transforme Seu Lar</h1>
+                <p class="text-xl md:text-2xl text-white mb-8 drop-shadow-md">Descubra peças únicas que contam a sua história.</p>
+                <a href="#" class="inline-block bg-white text-gray-800 hover:bg-gray-200 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">Explorar Coleções</a>
+            </div>
+        </section>
+
+        <!-- Seção de Categorias em Destaque -->
+        <section class="container mx-auto px-4 py-16">
+            <h2 class="text-3xl font-bold text-center mb-10">Nossas Categorias</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Categoria 1 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://placehold.co/600x400/D0D0D0/ffffff?text=Móveis" alt="Móveis" class="w-full h-48 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold mb-2">Móveis</h3>
+                        <p class="text-gray-600">Peças que definem seu espaço.</p>
+                        <a href="#" class="mt-4 inline-block text-blue-600 hover:text-blue-800 font-medium">Ver Móveis &rarr;</a>
+                    </div>
+                </div>
+                <!-- Categoria 2 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://placehold.co/600x400/E0E0E0/ffffff?text=Iluminação" alt="Iluminação" class="w-full h-48 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold mb-2">Iluminação</h3>
+                        <p class="text-gray-600">Crie a atmosfera perfeita.</p>
+                        <a href="#" class="mt-4 inline-block text-blue-600 hover:text-blue-800 font-medium">Ver Iluminação &rarr;</a>
+                    </div>
+                </div>
+                <!-- Categoria 3 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://placehold.co/600x400/F0F0F0/ffffff?text=Têxteis" alt="Têxteis" class="w-full h-48 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold mb-2">Têxteis</h3>
+                        <p class="text-gray-600">Conforto e estilo para seu lar.</p>
+                        <a href="#" class="mt-4 inline-block text-blue-600 hover:text-blue-800 font-medium">Ver Têxteis &rarr;</a>
+                    </div>
+                </div>
+                <!-- Categoria 4 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://placehold.co/600x400/A5A5A5/ffffff?text=Decoração" alt="Decoração" class="w-full h-48 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold mb-2">Decoração</h3>
+                        <p class="text-gray-600">Detalhes que fazem a diferença.</p>
+                        <a href="#" class="mt-4 inline-block text-blue-600 hover:text-blue-800 font-medium">Ver Decoração &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Produtos em Destaque -->
+        <section class="container mx-auto px-4 py-16 bg-gray-50 rounded-lg shadow-md">
+            <h2 class="text-3xl font-bold text-center mb-10">Produtos Populares</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Produto 1 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:shadow-xl transition-all duration-300">
+                    <img src="https://placehold.co/600x600/C0C0C0/ffffff?text=Vaso+Moderno" alt="Vaso Moderno" class="w-full h-64 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Vaso Cerâmico Moderno</h3>
+                        <p class="text-gray-600 mt-1">Design minimalista, ideal para qualquer ambiente.</p>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-xl font-bold text-gray-900">R$ 129,90</span>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Produto 2 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:shadow-xl transition-all duration-300">
+                    <img src="https://placehold.co/600x600/D5D5D5/ffffff?text=Luminária+LED" alt="Luminária LED" class="w-full h-64 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Luminária de Mesa LED</h3>
+                        <p class="text-gray-600 mt-1">Toque de luz e sofisticação.</p>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-xl font-bold text-gray-900">R$ 249,00</span>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Produto 3 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:shadow-xl transition-all duration-300">
+                    <img src="https://placehold.co/600x600/E5E5E5/ffffff?text=Manta+Macarron" alt="Manta Macaron" class="w-full h-64 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Manta Decorativa Macaron</h3>
+                        <p class="text-gray-600 mt-1">Aconchego e estilo para seu sofá.</p>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-xl font-bold text-gray-900">R$ 189,50</span>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Produto 4 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:shadow-xl transition-all duration-300">
+                    <img src="https://placehold.co/600x600/F5F5F5/ffffff?text=Almofada+Abstrata" alt="Almofada Abstrata" class="w-full h-64 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Almofada Geométrica Abstrata</h3>
+                        <p class="text-gray-600 mt-1">Conforto com um toque de arte.</p>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-xl font-bold text-gray-900">R$ 79,90</span>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Inspiração/Blog (Preview) -->
+        <section class="container mx-auto px-4 py-16">
+            <h2 class="text-3xl font-bold text-center mb-10">Inspire-se Conosco</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Artigo/Post 1 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://placehold.co/400x250/C0B0C0/ffffff?text=Tendências+2024" alt="Tendências de Decoração" class="w-full md:w-1/3 h-48 md:h-auto object-cover">
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-xl font-semibold mb-2">As 5 Maiores Tendências de Decoração para 2024</h3>
+                        <p class="text-gray-600 text-sm mb-4">Descubra o que está em alta no mundo do design de interiores e como aplicar no seu lar.</p>
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Ler Mais &rarr;</a>
+                    </div>
+                </div>
+                <!-- Artigo/Post 2 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://placehold.co/400x250/C5B5C5/ffffff?text=Otimizar+Espaços" alt="Otimização de Pequenos Espaços" class="w-full md:w-1/3 h-48 md:h-auto object-cover">
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-xl font-semibold mb-2">Como Otimizar Pequenos Espaços com Estilo</h3>
+                        <p class="text-gray-600 text-sm mb-4">Dicas e truques para fazer seu ambiente parecer maior e mais funcional.</p>
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Ler Mais &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-gray-800 text-white py-10 mt-16 rounded-t-lg shadow-inner mx-4 md:mx-auto md:max-w-7xl">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h3 class="text-xl font-bold mb-4">Minha Casa Decor</h3>
+                <p class="text-gray-400">Transformando lares com beleza e funcionalidade.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Links Úteis</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Sobre Nós</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Política de Privacidade</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Termos de Serviço</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Siga-nos</h3>
+                <div class="flex justify-center md:justify-start space-x-4">
+                    <!-- Ícones de Redes Sociais (apenas visuais) -->
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.071 1.17.062 1.627.243 2.075.43 1.258.56 2.083 1.455 2.518 2.518.187.448.369.905.43 2.075.059 1.266.071 1.646.071 4.85s-.012 3.584-.071 4.85c-.061 1.17-.243 1.627-.43 2.075-.56 1.258-1.455 2.083-2.518 2.518-.448.187-.905.369-2.075.43-1.266.059-1.646.071-4.85.071s-3.584-.012-4.85-.071c-1.17-.061-1.627-.243-2.075-.43-1.258-.56-2.083-1.455-2.518-2.518-.187-.448-.369-.905-.43-2.075-.059-1.266-.071-1.646-.071-4.85s.012-3.584.071-4.85c.061-1.17.243-1.627.43-2.075.56-1.258 1.455-2.083 2.518-2.518.448-.187.905-.369 2.075-.43 1.266-.059 1.646-.071 4.85-.071zm0-2.163c-3.259 0-3.667.014-4.947.072-1.377.072-2.399.29-3.25.617-.852.327-1.547.795-2.261 1.509-.714.714-1.182 1.409-1.509 2.261-.327.851-.545 1.873-.617 3.25-.058 1.28-.072 1.688-.072 4.947s.014 3.667.072 4.947c.072 1.377.29 2.399.617 3.25.327.852.795 1.547 1.509 2.261.714.714 1.409 1.182 2.261 1.509.851.327 1.873.545 3.25.617 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c1.377-.072 2.399-.29 3.25-.617.852-.327 1.547-.795 2.261-1.509.714-.714 1.182-1.409 1.509-2.261.327-.851.545-1.873.617-3.25.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.072-1.377-.29-2.399-.617-3.25-.327-.852-.795-1.547-1.509-2.261-.714-.714-1.409-1.182-2.261-1.509-.851-.327-1.873-.545-3.25-.617-1.28-.058-1.688-.072-4.947-.072zm0 10.938c-3.797 0-6.903-3.106-6.903-6.903s3.106-6.903 6.903-6.903 6.903 3.106 6.903 6.903-3.106 6.903-6.903 6.903zm0-11.393c-2.494 0-4.512 2.018-4.512 4.512s2.018 4.512 4.512 4.512 4.512-2.018 4.512-4.512-2.018-4.512-4.512-4.512zm6.536-4.966c-.636 0-1.15.514-1.15 1.15s.514 1.15 1.15 1.15 1.15-.514 1.15-1.15-.514-1.15-1.15-1.15z"></path></svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6h-2.2c-.443 0-.8.357-.8.8v2.2a.8.8 0 01-.8.8h-2.2a.8.8 0 01-.8-.8v-2.2c0-.443-.357-.8-.8-.8h-2.2a.8.8 0 01-.8-.8V3.8c0-.443-.357-.8-.8-.8h-2.2a.8.8 0 01-.8-.8V.8c0-.443-.357-.8-.8-.8H3.8a.8.8 0 00-.8.8V3.8c0-.443-.357-.8-.8-.8H.8a.8.8 0 00-.8.8v2.2a.8.8 0 00.8.8h2.2c.443 0 .8.357.8.8v2.2a.8.8 0 00.8.8h2.2a.8.8 0 00.8-.8v-2.2c0-.443.357-.8.8-.8h2.2a.8.8 0 00.8-.8V.8c0-.443.357-.8.8-.8h2.2c.443 0 .8.357.8.8V3.8c0-.443.357-.8.8-.8h2.2c.443 0 .8.357.8.8v2.2a.8.8 0 00.8.8z"></path><path d="M16 11.2a4.8 4.8 0 100 9.6 4.8 4.8 0 000-9.6zM16 19.6a3.6 3.6 0 110-7.2 3.6 3.6 0 010 7.2zM16 12a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+                    </a>
+                </div>
+                <p class="text-gray-400 mt-4">&copy; 2024 Minha Casa Decor. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simples script para o menu mobile (apenas toggle de visibilidade)
+        document.querySelector('header button.md\\:hidden').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
