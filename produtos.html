@@ -76,7 +76,7 @@
       container.appendChild(card);
     });
   </script>
-  
+
   <!-- Modal do Carrinho -->
   <div id="cart-modal"
     class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center opacity-0 pointer-events-none transition-opacity duration-300">
@@ -86,5 +86,176 @@
       <h2 class="text-2xl font-bold mb-4">Seu Carrinho</h2>
       <ul id="cart-items" class="mb-4 max-h-64 overflow-auto"></ul>
 
+      <!-- Total -->
+      <div class="text-right font-bold text-lg mb-4">Total: R$ <span id="cart-total">0,00</span></div>
+
+      <!-- Formulário de Checkout -->
+      <form id="checkout-form" class="space-y-4">
+        <h3 class="text-xl font-semibold mb-2">Checkout</h3>
+
+        <div>
+          <label for="nome" class="block font-medium mb-1">Nome completo</label>
+          <input type="text" id="nome" name="nome" required
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+        </div>
+
+        <div>
+          <label for="email" class="block font-medium mb-1">Email</label>
+          <input type="email" id="email" name="email" required
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+        </div>
+
+        <div>
+          <label for="endereco" class="block font-medium mb-1">Endereço</label>
+          <textarea id="endereco" name="endereco" required rows="3"
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+        </div>
+
+       <button type="submit"
+          class="bg-green-600 text-white font-semibold py-2 px-6 rounded hover:bg-green-700 transition w-full">Finalizar
+          Compra</button>
+
+      <script>
+    // Produtos no carrinho: objeto { nome, preco, quantidade }
+    const carrinho = [];
+
+    // Atualiza contador do carrinho (soma das quantidades)
+    function atualizarContador() {
+      const count = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+      const countSpan = document.getElementById('cart-count');
+      countSpan.textContent = count;
+      countSpan.style.display = count === 0 ? 'none' : 'inline-block';
+    }
+
+    // Atualiza modal com os itens, quantidades e total
+    function atualizarModal() {
+      const lista = document.getElementById('cart-items');
+      lista.innerHTML = '';
+      if (carrinho.length === 0) {
+        lista.innerHTML = '<li class="text-gray-600">Seu carrinho está vazio.</li>';
+        document.getElementById('cart-total').textContent = '0,00';
+        return;
+      }
+
+      carrinho.forEach((item, i) => {
+        const li = document.createElement('li');
+        li.className = 'border-b py-2 flex justify-between items-center space-x-2';
+
+        li.innerHTML = `
+          <div class="flex-1">
+            <strong>${item.nome}</strong><br />
+            R$ ${item.preco.toFixed(2).replace('.', ',')} x 
+            <input type="number" min="1" value="${item.quantidade}" data-index="${i}" class="quantidade-input w-16 border border-gray-300 rounded px-1 py-0.5 text-center" aria-label="Quantidade de ${item.nome}" />
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="font-semibold">R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
+            <button data-index="${i}" class="text-red-600 hover:text-red-800 remover-item text-xl font-bold" aria-label="Remover ${item.nome} do carrinho">&times;</button>
+          </div>
+        `;
+        lista.appendChild(li);
+      });
+
+      // Atualiza total
+      const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+      document.getElementById('cart-total').textContent = total.toFixed(2).replace('.', ',');
+
+      // Eventos para remover item
+      document.querySelectorAll('.remover-item').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const idx = Number(e.target.dataset.index);
+          carrinho.splice(idx, 1);
+          atualizarContador();
+          atualizarModal();
+        });
+      });
+
+      // Eventos para alterar quantidade
+      document.querySelectorAll('.quantidade-input').forEach(input => {
+        input.addEventListener('change', e => {
+          const idx = Number(e.target.dataset.index);
+          let val = parseInt(e.target.value);
+          if (isNaN(val) || val < 1) {
+            val = 1;
+            e.target.value = 1;
+          }
+          carrinho[idx].quantidade = val;
+          atualizarContador();
+          atualizarModal();
+        });
+      });
+    }
+
+    // Função para adicionar produto ao carrinho (ou aumentar quantidade)
+    function adicionarProduto(nome, preco) {
+      const idx = carrinho.findIndex(p => p.nome === nome);
+      if (idx >= 0) {
+        carrinho[idx].quantidade++;
+      } else {
+        carrinho.push({ nome, preco, quantidade: 1 });
+      }
+      atualizarContador();
+    }
+
+    // Abrir modal
+    const cartButton = document.getElementById('cart-button');
+    const cartModal = document.getElementById('cart-modal');
+    const closeCartBtn = document.getElementById('close-cart');
+
+    cartButton.addEventListener('click', () => {
+      atualizarModal();
+      cartModal.classList.remove('opacity-0', 'pointer-events-none');
+    });
+
+    closeCartBtn.addEventListener('click', () => {
+      cartModal.classList.add('opacity-0', 'pointer-events-none');
+    });
+
+    // Adicionar produtos via botões
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nome = btn.dataset.produto;
+        const preco = Number(btn.dataset.preco);
+        adicionarProduto(nome, preco);
+        alert(`${nome} adicionado ao carrinho!`);
+      });
+    });
+
+    // Validar e enviar formulário de checkout
+    const checkoutForm = document.getElementById('checkout-form');
+    checkoutForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Se carrinho vazio, não permite checkout
+      if (carrinho.length === 0) {
+        alert('Seu carrinho está vazio.');
+        return;
+      }
+
+      // Validação simples dos campos (HTML já faz a maior parte)
+      const nome = checkoutForm.nome.value.trim();
+      const email = checkoutForm.email.value.trim();
+      const endereco = checkoutForm.endereco.value.trim();
+
+      if (!nome || !email || !endereco) {
+        alert('Por favor, preencha todos os campos do formulário.');
+        return;
+      }
+
+      // Pode adicionar validações extras aqui, se quiser (ex: regex email)
+
+      // Simulação de envio
+      alert(`Obrigado pela compra, ${nome}!\nTotal: R$ ${document.getElementById('cart-total').textContent}`);
+
+      // Limpar carrinho e formulário
+      carrinho.length = 0;
+      atualizarContador();
+      atualizarModal();
+      checkoutForm.reset();
+      cartModal.classList.add('opacity-0', 'pointer-events-none');
+    });
+
+    // Inicializa contador oculto se zero
+    atualizarContador();
+  </script>
 </body>
 </html>
