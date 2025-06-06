@@ -50,7 +50,16 @@
        preco: 899.90,
        imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg"
       },
-
+       {
+       nome: "Recamier Banco Puff com Bau",
+       preco: 550.00,
+       imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg"
+      },
+       {
+       nome: "Kit de nicho",
+       preco: 300.00,
+       imagem: "https://i.pinimg.com/736x/60/6b/f9/606bf992e0fa58769005d43ac482a75e.jpg"
+      },
      ];
 
     const container = document.getElementById("lista-produtos");
@@ -67,5 +76,15 @@
       container.appendChild(card);
     });
   </script>
+  
+  <!-- Modal do Carrinho -->
+  <div id="cart-modal"
+    class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg w-11/12 max-w-lg p-6 relative max-h-[90vh] overflow-y-auto">
+      <button id="close-cart" aria-label="Fechar carrinho"
+        class="absolute top-3 right-3 text-gray-700 hover:text-gray-900 text-xl font-bold">&times;</button>
+      <h2 class="text-2xl font-bold mb-4">Seu Carrinho</h2>
+      <ul id="cart-items" class="mb-4 max-h-64 overflow-auto"></ul>
+
 </body>
 </html>
