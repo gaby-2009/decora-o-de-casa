@@ -9,62 +9,92 @@
 <body class="bg-gray-50 font-sans">
   <header class="bg-white shadow p-4">
     <h1 class="text-2xl font-bold text-center">Nossos Produtos</h1>
+    <div class="flex justify-between items-center mt-4">
+      <div class="text-lg font-semibold">
+        <span id="cart-count">0</span> Itens no Carrinho
+      </div>
+      <button id="view-cart-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Ver Carrinho
+      </button>
+    </div>
   </header>
 
   <main class="container mx-auto p-6">
-    <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <!-- Produtos aparecerão aqui -->
-    </div>
+    <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
   </main>
 
+  <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg w-11/12 max-w-lg p-6 relative max-h-[90vh] overflow-y-auto">
+      <button id="close-cart" class="absolute top-3 right-3 text-gray-700 hover:text-gray-900 text-xl font-bold">&times;</button>
+      <h2 class="text-2xl font-bold mb-4">Seu Carrinho</h2>
+      <ul id="cart-items" class="mb-4 max-h-64 overflow-auto"></ul>
+      <div class="text-right font-bold text-lg mb-4">Total: R$ <span id="cart-total">0,00</span></div>
+      <button id="checkout-btn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Finalizar Compra</button>
+    </div>
+  </div>
+
   <script>
-    // Simulação de dados de produtos
     const produtos = [
-      {
-        nome: "Cadeira Elegante",
-        preco: 299.90,
-        imagem: "c10223f411c47646f95ae8fa73fdd033.jpg"
-      },
-      {
-        nome: "Mesa de Centro",
-        preco: 499.00,
-        imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg"
-      },
-      {
-        nome: "Poltrona",
-        preco: 199.99,
-       imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg"
-      },
-      {
-       nome: "mesa lateral",
-       preco: 1308.00, 
-       imagem: "https://i.pinimg.com/736x/0b/2f/2f/0b2f2ff20f2058d5db6c1723aec5bcb4.jpg"
-      },
-      {
-       nome: "Sofá Redondo",
-       preco: 2000.00,
-       imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg"
-      },
-      {
-       nome: "Rede cadeira de balanço",
-       preco: 899.90,
-       imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg"
-      },
-       {
-       nome: "Recamier Banco Puff com Bau",
-       preco: 550.00,
-       imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg"
-      },
-       {
-       nome: "Kit de nicho",
-       preco: 300.00,
-       imagem: "https://i.pinimg.com/736x/60/6b/f9/606bf992e0fa58769005d43ac482a75e.jpg"
-      },
-     ];
+      { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
+      { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
+      { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
+      { nome: "Mesa Lateral", preco: 1308.00, imagem: "https://i.pinimg.com/736x/0b/2f/2f/0b2f2ff20f2058d5db6c1723aec5bcb4.jpg" },
+      { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
+      { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg" },
+      { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
+      { nome: "Kit de Ninho", preco: 300.00, imagem: "https://i.pinimg.com/736x/60/6b/f9/606bf992e0fa58769005d43ac482a75e.jpg" }
+    ];
 
+    function atualizarContadorCarrinho() {
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      const contador = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+      document.getElementById('cart-count').textContent = contador;
+    }
 
+    function atualizarModalCarrinho() {
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      const listaCarrinho = document.getElementById('cart-items');
+      listaCarrinho.innerHTML = '';
 
-     
+      if (carrinho.length === 0) {
+        listaCarrinho.innerHTML = '<li class="text-gray-600">Seu carrinho está vazio.</li>';
+        document.getElementById('cart-total').textContent = '0,00';
+        return;
+      }
+
+      let total = 0;
+      carrinho.forEach((item, i) => {
+        const li = document.createElement('li');
+        li.className = 'border-b py-2 flex justify-between items-center space-x-2';
+        total += item.preco * item.quantidade;
+        li.innerHTML = `
+          <div class="flex-1">
+            <strong>${item.nome}</strong><br />
+            R$ ${item.preco.toFixed(2).replace('.', ',')} x ${item.quantidade}
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="font-semibold">R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
+            <button data-index="${i}" class="text-red-600 hover:text-red-800 remover-item text-xl font-bold">×</button>
+          </div>
+        `;
+        listaCarrinho.appendChild(li);
+      });
+
+      document.getElementById('cart-total').textContent = total.toFixed(2).replace('.', ',');
+    }
+
+    function adicionarAoCarrinho(produto) {
+      let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      const index = carrinho.findIndex(item => item.nome === produto.nome);
+      if (index >= 0) {
+        carrinho[index].quantidade++;
+      } else {
+        carrinho.push({ ...produto, quantidade: 1 });
+      }
+      localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      atualizarContadorCarrinho();
+    }
+
     const container = document.getElementById("lista-produtos");
 
     produtos.forEach(produto => {
@@ -74,192 +104,44 @@
         <img src="${produto.imagem}" alt="${produto.nome}" class="w-full h-48 object-cover mb-4 rounded" />
         <h3 class="text-lg font-semibold">${produto.nome}</h3>
         <p class="text-gray-600">R$ ${produto.preco.toFixed(2).replace('.', ',')}</p>
-        <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Adicionar ao Carrinho</button>
+        <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 add-to-cart-btn">Adicionar ao Carrinho</button>
       `;
       container.appendChild(card);
-    });
-  </script>
-
-
-  <!-- Modal do Carrinho -->
-  <div id="cart-modal"
-    class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center opacity-0 pointer-events-none transition-opacity duration-300">
-    <div class="bg-white rounded-lg w-11/12 max-w-lg p-6 relative max-h-[90vh] overflow-y-auto">
-      <button id="close-cart" aria-label="Fechar carrinho"
-        class="absolute top-3 right-3 text-gray-700 hover:text-gray-900 text-xl font-bold">&times;</button>
-      <h2 class="text-2xl font-bold mb-4">Seu Carrinho</h2>
-      <ul id="cart-items" class="mb-4 max-h-64 overflow-auto"></ul>
-
-      <!-- Total -->
-      <div class="text-right font-bold text-lg mb-4">Total: R$ <span id="cart-total">0,00</span></div>
-
-      <!-- Formulário de Checkout -->
-      <form id="checkout-form" class="space-y-4">
-        <h3 class="text-xl font-semibold mb-2">Checkout</h3>
-
-        <div>
-          <label for="nome" class="block font-medium mb-1">Nome completo</label>
-          <input type="text" id="nome" name="nome" required
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
-        </div>
-
-        <div>
-          <label for="email" class="block font-medium mb-1">Email</label>
-          <input type="email" id="email" name="email" required
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
-        </div>
-
-        <div>
-          <label for="endereco" class="block font-medium mb-1">Endereço</label>
-          <textarea id="endereco" name="endereco" required rows="3"
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
-        </div>
-
-       <button type="submit"
-          class="bg-green-600 text-white font-semibold py-2 px-6 rounded hover:bg-green-700 transition w-full">Finalizar
-          Compra</button>
-
-      <script>
-    // Produtos no carrinho: objeto { nome, preco, quantidade }
-    const carrinho = [];
-
-    // Atualiza contador do carrinho (soma das quantidades)
-    function atualizarContador() {
-      const count = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
-      const countSpan = document.getElementById('cart-count');
-      countSpan.textContent = count;
-      countSpan.style.display = count === 0 ? 'none' : 'inline-block';
-    }
-
-    // Atualiza modal com os itens, quantidades e total
-    function atualizarModal() {
-      const lista = document.getElementById('cart-items');
-      lista.innerHTML = '';
-      if (carrinho.length === 0) {
-        lista.innerHTML = '<li class="text-gray-600">Seu carrinho está vazio.</li>';
-        document.getElementById('cart-total').textContent = '0,00';
-        return;
-      }
-
-      carrinho.forEach((item, i) => {
-        const li = document.createElement('li');
-        li.className = 'border-b py-2 flex justify-between items-center space-x-2';
-
-        li.innerHTML = `
-          <div class="flex-1">
-            <strong>${item.nome}</strong><br />
-            R$ ${item.preco.toFixed(2).replace('.', ',')} x 
-            <input type="number" min="1" value="${item.quantidade}" data-index="${i}" class="quantidade-input w-16 border border-gray-300 rounded px-1 py-0.5 text-center" aria-label="Quantidade de ${item.nome}" />
-          </div>
-          <div class="flex items-center space-x-2">
-            <span class="font-semibold">R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
-            <button data-index="${i}" class="text-red-600 hover:text-red-800 remover-item text-xl font-bold" aria-label="Remover ${item.nome} do carrinho">&times;</button>
-          </div>
-        `;
-        lista.appendChild(li);
-      });
-
-      // Atualiza total
-      const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
-      document.getElementById('cart-total').textContent = total.toFixed(2).replace('.', ',');
-
-      // Eventos para remover item
-      document.querySelectorAll('.remover-item').forEach(btn => {
-        btn.addEventListener('click', e => {
-          const idx = Number(e.target.dataset.index);
-          carrinho.splice(idx, 1);
-          atualizarContador();
-          atualizarModal();
-        });
-      });
-
-      // Eventos para alterar quantidade
-      document.querySelectorAll('.quantidade-input').forEach(input => {
-        input.addEventListener('change', e => {
-          const idx = Number(e.target.dataset.index);
-          let val = parseInt(e.target.value);
-          if (isNaN(val) || val < 1) {
-            val = 1;
-            e.target.value = 1;
-          }
-          carrinho[idx].quantidade = val;
-          atualizarContador();
-          atualizarModal();
-        });
-      });
-    }
-
-    // Função para adicionar produto ao carrinho (ou aumentar quantidade)
-    function adicionarProduto(nome, preco) {
-      const idx = carrinho.findIndex(p => p.nome === nome);
-      if (idx >= 0) {
-        carrinho[idx].quantidade++;
-      } else {
-        carrinho.push({ nome, preco, quantidade: 1 });
-      }
-      atualizarContador();
-    }
-
-    // Abrir modal
-    const cartButton = document.getElementById('cart-button');
-    const cartModal = document.getElementById('cart-modal');
-    const closeCartBtn = document.getElementById('close-cart');
-
-    cartButton.addEventListener('click', () => {
-      atualizarModal();
-      cartModal.classList.remove('opacity-0', 'pointer-events-none');
-    });
-
-    closeCartBtn.addEventListener('click', () => {
-      cartModal.classList.add('opacity-0', 'pointer-events-none');
-    });
-
-    // Adicionar produtos via botões
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const nome = btn.dataset.produto;
-        const preco = Number(btn.dataset.preco);
-        adicionarProduto(nome, preco);
-        alert(`${nome} adicionado ao carrinho!`);
+      card.querySelector('.add-to-cart-btn').addEventListener('click', () => {
+        adicionarAoCarrinho(produto);
+        alert(`${produto.nome} adicionado ao carrinho!`);
       });
     });
 
-    // Validar e enviar formulário de checkout
-    const checkoutForm = document.getElementById('checkout-form');
-    checkoutForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      // Se carrinho vazio, não permite checkout
-      if (carrinho.length === 0) {
-        alert('Seu carrinho está vazio.');
-        return;
-      }
-
-      // Validação simples dos campos (HTML já faz a maior parte)
-      const nome = checkoutForm.nome.value.trim();
-      const email = checkoutForm.email.value.trim();
-      const endereco = checkoutForm.endereco.value.trim();
-
-      if (!nome || !email || !endereco) {
-        alert('Por favor, preencha todos os campos do formulário.');
-        return;
-      }
-
-      // Pode adicionar validações extras aqui, se quiser (ex: regex email)
-
-      // Simulação de envio
-      alert(`Obrigado pela compra, ${nome}!\nTotal: R$ ${document.getElementById('cart-total').textContent}`);
-
-      // Limpar carrinho e formulário
-      carrinho.length = 0;
-      atualizarContador();
-      atualizarModal();
-      checkoutForm.reset();
-      cartModal.classList.add('opacity-0', 'pointer-events-none');
+    document.getElementById('view-cart-btn').addEventListener('click', () => {
+      atualizarModalCarrinho();
+      document.getElementById('cart-modal').classList.remove('opacity-0', 'pointer-events-none');
     });
 
-    // Inicializa contador oculto se zero
-    atualizarContador();
+    document.getElementById('close-cart').addEventListener('click', () => {
+      document.getElementById('cart-modal').classList.add('opacity-0', 'pointer-events-none');
+    });
+
+    document.getElementById('cart-items').addEventListener('click', (e) => {
+      if (e.target.classList.contains('remover-item')) {
+        const index = e.target.getAttribute('data-index');
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        carrinho.splice(index, 1);
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        atualizarModalCarrinho();
+        atualizarContadorCarrinho();
+      }
+    });
+
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      alert('Compra finalizada! Obrigado pela preferência.');
+      localStorage.removeItem('carrinho');
+      atualizarModalCarrinho();
+      atualizarContadorCarrinho();
+      document.getElementById('cart-modal').classList.add('opacity-0', 'pointer-events-none');
+    });
+
+    atualizarContadorCarrinho();
   </script>
 </body>
 </html>
