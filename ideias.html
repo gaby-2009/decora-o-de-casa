@@ -1,26 +1,34 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>ideias | Minha Casa Decor</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-
+    <title>Ideias | Minha Casa Decor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 font-sans">
-  <header class="bg-white shadow p-4">
-    <h1 class="text-2xl font-bold text-center">Ideias de decorações</h1>
-    <div class="flex justify-between items-center mt-4">
-      <div class="text-lg font-semibold">
-    </div>
-  </header>
 
-    <script>
-    const produtos = [
-      { nome: "Sala de Jantar", imagem: "https://i.pinimg.com/736x/75/f9/52/75f95227ca371e1e50ac40b10dd9582a.jpg" },
-      { nome: "Sala de Jantar", imagem: "https://br.pinterest.com/pin/1088463803699668810/" },
-      
-    ];
-    </script>
+    <header class="bg-white shadow p-4">
+        <h1 class="text-2xl font-bold text-center">Ideias de decorações</h1>
+        <div class="flex justify-between items-center mt-4">
+            <!-- Pode adicionar aqui algo se necessário -->
+        </div>
+    </header>
+
+    <!-- Exibir produtos -->
+    <div class="p-4 grid grid-cols-2 gap-4">
+        <!-- Primeiro Produto -->
+        <div class="flex justify-center items-center">
+            <img src="https://i.pinimg.com/736x/75/f9/52/75f95227ca371e1e50ac40b10dd9582a.jpg" 
+                 alt="Sala de Jantar" class="w-64 h-64 object-cover rounded-md">
+        </div>
+
+        <!-- Segundo Produto -->
+        <div class="flex justify-center items-center">
+            <img src="https://i.pinimg.com/736x/4e/36/9b/4e369b2267ed5b57c2e799c5cb3b7462.jpg" 
+                 alt="Sala de Jantar" class="w-64 h-64 object-cover rounded-md">
+        </div>
+    </div>
+    
 </body>
 </html>
