@@ -73,6 +73,33 @@
     });
   </script>
 
+  searchInput.addEventListener('input', function() {
+  const query = searchInput.value.toLowerCase();
+
+  if (query.length > 0) {
+    fetch(`/api/sugestoes?q=${query}`)
+      .then(response => response.json())
+      .then(data => {
+        suggestionsBox.innerHTML = '';
+        data.forEach(item => {
+          const suggestionItem = document.createElement('div');
+          suggestionItem.classList.add('suggestion-item');
+          suggestionItem.textContent = item;
+          suggestionItem.addEventListener('click', function() {
+            searchInput.value = item;
+            suggestionsBox.style.display = 'none';
+          });
+          suggestionsBox.appendChild(suggestionItem);
+        });
+        suggestionsBox.style.display = data.length > 0 ? 'block' : 'none';
+      })
+      .catch(error => console.error('Erro ao obter sugestões:', error));
+  } else {
+    suggestionsBox.style.display = 'none';
+  }
+});
+
+
 </body>
 </html>
 
