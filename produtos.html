@@ -48,29 +48,8 @@
 
   <header class="bg-white shadow p-4">
     <h1 class="text-2xl font-bold text-center">Nossos Produtos</h1>
-    <div class="flex justify-between items-center mt-4">
-      <div class="text-lg font-semibold">
-        <span id="cart-count">0</span> Itens no Carrinho</div>
-      <button id="view-cart-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"> Ver Carrinho</button>
-    </div>
-  </header>
+
  
-  
-
-  <main class="container mx-auto p-6">
-    <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
-  </main>
-
-  <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center opacity-0 pointer-events-none transition-opacity duration-300">
-    <div class="bg-white rounded-lg w-11/12 max-w-lg p-6 relative max-h-[90vh] overflow-y-auto">
-      <button id="close-cart" class="absolute top-3 right-3 text-gray-700 hover:text-gray-900 text-xl font-bold">&times;</button>
-      <h2 class="text-2xl font-bold mb-4">Seu Carrinho</h2>
-      <ul id="cart-items" class="mb-4 max-h-64 overflow-auto"></ul>
-      <div class="text-right font-bold text-lg mb-4">Total: R$ <span id="cart-total">0,00</span></div>
-      <button id="checkout-btn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Finalizar Compra</button>
-    </div>
-  </div>
-
   <script>
     const produtos = [
       { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
