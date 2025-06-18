@@ -30,7 +30,21 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 
-
+<div class="flex items-center space-x-4">
+        <!-- Carrinho com contador -->
+        <button id="cart-button" aria-label="Carrinho de compras"
+          class="relative text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H3m4 8V19a2 2 0 002 2h10a2 2 0 002-2V13m-4 0l-2 2m0 0l-2-2" />
+          </svg>
+          <!-- Contador -->
+          <span id="cart-count"
+            class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full px-1 text-xs font-bold min-w-[18px] text-center">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
   <header class="bg-white shadow p-4">
     <h1 class="text-2xl font-bold text-center">Nossos Produtos</h1>
