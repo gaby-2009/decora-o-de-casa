@@ -29,21 +29,6 @@
   <div id="suggestions"></div> <!-- Aqui serão mostradas as sugestões -->
 
   <script>
-    const searchInput = document.querySelector('input[name="q"]');
-    const suggestionsBox = document.getElementById('suggestions');
-
-    const suggestions = [
-      'JavaScript',
-      'HTML',
-      'CSS',
-      'Node.js',
-      'React',
-      'Vue.js',
-      'Angular',
-      'Python',
-      'Django',
-      'Flask'
-    ];
 
     searchInput.addEventListener('input', function() {
       const query = searchInput.value.toLowerCase(); // Captura o que o usuário digitou
@@ -59,14 +44,14 @@
           suggestionItem.classList.add('suggestion-item');
           suggestionItem.textContent = item;
           suggestionItem.addEventListener('click', function() {
-            searchInput.value = item;  // Preenche o campo de pesquisa com a sugestão selecionada
+            searchInput.value = item; 'poltrona'
             suggestionsBox.style.display = 'none'; // Esconde as sugestões
           });
           suggestionsBox.appendChild(suggestionItem);
         });
 
         // Mostra o box de sugestões
-        suggestionsBox.style.display = filteredSuggestions.length > 0 ? 'block' : 'none';
+        suggestionsBox.style.display = filteredSuggestions.length> 0 ? 'block' : 'none';
       } else {
         suggestionsBox.style.display = 'none'; // Esconde as sugestões se o campo estiver vazio
       }
@@ -93,12 +78,11 @@
         });
         suggestionsBox.style.display = data.length > 0 ? 'block' : 'none';
       })
-      .catch(error => console.error('Erro ao obter sugestões:', error));
+      .catch(error => console.error('Erro ao obter sugestões:', error))
   } else {
-    suggestionsBox.style.display = 'none';
+    suggestionsBox.style.display = 'none'
   }
-});
-
+})
 
 </body>
 </html>
