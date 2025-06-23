@@ -60,6 +60,11 @@
       align-items: center;
       padding: 10px 5px;
       border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .results-list li:hover {
+      background-color: #f0f0f0;
     }
     .results-list li img {
       width: 60px;
@@ -79,6 +84,95 @@
     .product-price {
       color: #008000;
       font-weight: 600;
+    }
+
+    /* Lista de produtos (cards) */
+    #lista-produtos {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+      gap: 20px;
+    }
+    .produto-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      background: white;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+      transition: transform 0.15s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .produto-card:hover {
+      transform: scale(1.05);
+      border-color: #333;
+    }
+    .produto-card img {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .produto-nome {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .produto-preco {
+      color: #008000;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    /* Carrinho */
+    #carrinho {
+      max-width: 600px;
+      margin: 30px auto 0 auto;
+      background: white;
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    #carrinho h2 {
+      margin-bottom: 10px;
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+    }
+    #carrinho ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 10px 0;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    #carrinho li {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 6px;
+      border-bottom: 1px solid #ddd;
+      font-size: 16px;
+    }
+    #carrinho li span {
+      flex: 1;
+    }
+    #carrinho li .quantidade {
+      width: 40px;
+      text-align: center;
+      color: #555;
+    }
+    #carrinho-total {
+      font-weight: 700;
+      font-size: 18px;
+      text-align: right;
+      border-top: 1px solid #333;
+      padding-top: 10px;
     }
   </style>
 </head>
@@ -106,13 +200,18 @@
     <p>Digite para pesquisar um produto.</p>
   </div>
 
-  <main class="container mx-auto p-6">
+  <main>
     <h1 class="text-2xl font-bold text-center mb-6">Nossos Produtos</h1>
-    <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+    <div id="lista-produtos"></div>
   </main>
 
+  <section id="carrinho" aria-label="Carrinho de compras" hidden>
+    <h2>Seu Carrinho</h2>
+    <ul id="itens-carrinho"></ul>
+    <div id="carrinho-total">Total: R$ 0,00</div>
+  </section>
+
 <script>
-  // Array completo de produtos com nome, preço e imagem
   const produtos = [
     { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
     { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
@@ -130,13 +229,84 @@
   const button = document.getElementById('searchBtn');
   const resultsList = document.getElementById('resultsList');
   const listaProdutos = document.getElementById('lista-produtos');
+  const carrinhoSection = document.getElementById('carrinho');
+  const itensCarrinhoList = document.getElementById('itens-carrinho');
+  const carrinhoTotal = document.getElementById('carrinho-total');
 
-  // Função para formatar preço em moeda BRL
+  // Carrinho: objeto com nome do produto como chave, valor é objeto com produto e quantidade
+  const carrinho = {};
+
   function formatPrice(price) {
     return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
-  // Função que executa a busca
+  function mostrarProdutos(produtosExibir = produtos) {
+    listaProdutos.innerHTML = '';
+    produtosExibir.forEach((produto, index) => {
+      const card = document.createElement('div');
+      card.classList.add('produto-card');
+      card.setAttribute('tabindex', '0'); // para ser focável
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-pressed', 'false');
+      card.setAttribute('aria-label', `Adicionar ${produto.nome} ao carrinho`);
+      card.innerHTML = `
+        <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/250x180?text=Sem+Imagem'">
+        <div class="produto-nome">${produto.nome}</div>
+        <div class="produto-preco">${formatPrice(produto.preco)}</div>
+      `;
+      // Evento clique para adicionar ao carrinho
+      card.addEventListener('click', () => {
+        adicionarAoCarrinho(produto);
+      });
+      // Evento tecla Enter para acessibilidade
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          adicionarAoCarrinho(produto);
+        }
+      });
+      listaProdutos.appendChild(card);
+    });
+  }
+
+  function adicionarAoCarrinho(produto) {
+    if (carrinho[produto.nome]) {
+      carrinho[produto.nome].quantidade++;
+    } else {
+      carrinho[produto.nome] = {
+        produto: produto,
+        quantidade: 1
+      };
+    }
+    atualizarCarrinho();
+  }
+
+  function atualizarCarrinho() {
+    const itens = Object.values(carrinho);
+    if (itens.length === 0) {
+      carrinhoSection.hidden = true;
+      return;
+    }
+    carrinhoSection.hidden = false;
+    itensCarrinhoList.innerHTML = '';
+
+    let total = 0;
+
+    itens.forEach(({ produto, quantidade }) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${produto.nome}</span>
+        <span class="quantidade">x${quantidade}</span>
+        <span>${formatPrice(produto.preco * quantidade)}</span>
+      `;
+      itensCarrinhoList.appendChild(li);
+      total += produto.preco * quantidade;
+    });
+
+    carrinhoTotal.textContent = `Total: ${formatPrice(total)}`;
+  }
+
+  // Busca produtos pelo nome e mostra na resultsList
   function performSearch() {
     const query = input.value.trim().toLowerCase();
 
@@ -153,7 +323,7 @@
     }
 
     const listHTML = '<ul>' + filtered.map(produto => `
-      <li>
+      <li tabindex="0" role="button" aria-pressed="false" aria-label="Adicionar ${produto.nome} ao carrinho">
         <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/60x60?text=Sem+Imagem'" />
         <div class="product-info">
           <span class="product-name">${produto.nome}</span>
@@ -163,9 +333,22 @@
     `).join('') + '</ul>';
 
     resultsList.innerHTML = listHTML;
+
+    // Adiciona evento clique para cada item da lista de resultados para adicionar ao carrinho
+    const items = resultsList.querySelectorAll('li');
+    items.forEach((item, i) => {
+      item.addEventListener('click', () => {
+        adicionarAoCarrinho(filtered[i]);
+      });
+      item.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          adicionarAoCarrinho(filtered[i]);
+        }
+      });
+    });
   }
 
-  // Eventos para o botão e tecla Enter
   button.addEventListener('click', performSearch);
   input.addEventListener('keydown', event => {
     if(event.key === 'Enter'){
@@ -173,24 +356,8 @@
     }
   });
 
-  // Inicializa a lista com mensagem
+  // Inicializa
   resultsList.innerHTML = '<p>Digite para pesquisar um produto.</p>';
-
-  // Função para mostrar todos os produtos na página principal
-  function mostrarProdutos() {
-    listaProdutos.innerHTML = '';
-    produtos.forEach(produto => {
-      const card = document.createElement('div');
-      card.classList.add('border', 'rounded', 'p-4', 'bg-white', 'shadow-sm', 'flex', 'flex-col', 'items-center');
-      card.innerHTML = `
-        <img src="${produto.imagem}" alt="${produto.nome}" class="mb-4 w-full max-h-48 object-cover rounded" onerror="this.src='https://via.placeholder.com/150?text=Sem+Imagem'">
-        <h2 class="text-lg font-semibold mb-2 text-center">${produto.nome}</h2>
-        <p class="text-green-600 font-bold">${formatPrice(produto.preco)}</p>
-      `;
-      listaProdutos.appendChild(card);
-    });
-  }
-
   mostrarProdutos();
 
 </script>
