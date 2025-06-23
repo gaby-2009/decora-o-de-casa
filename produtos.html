@@ -20,15 +20,84 @@
         <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Contato</a>
       </nav>
 
-      <form action="/pesquisa" method="GET">
-  <input type="text" name="q" placeholder="Buscar..." />
-  <button type="submit">
-    <i class="fa fa-search"></i> <!-- Ícone de lupa -->
-  </button>
-</form>
-<head>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <title>Barra de Pesquisa com Lupa</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 30px;
+    background: #f9f9f9;
+  }
+  .search-container {
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    border: 2px solid #333;
+    border-radius: 25px;
+    overflow: hidden;
+    background: white;
+  }
+  input[type="text"] {
+    flex: 1;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    outline: none;
+  }
+  button {
+    background: #333;
+    border: none;
+    color: white;
+    padding: 0 20px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  button:hover {
+    background: #555;
+  }
+  .result {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #222;
+  }
+</style>
 </head>
+<body>
+
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Digite sua pesquisa..." />
+  <button id="searchBtn" aria-label="Pesquisar">
+    🔍
+  </button>
+</div>
+
+<div class="result" id="result"></div>
+
+<script>
+  const input = document.getElementById('searchInput');
+  const button = document.getElementById('searchBtn');
+  const result = document.getElementById('result');
+
+  function performSearch() {
+    const query = input.value.trim();
+    if (query === '') {
+      result.textContent = 'Por favor, digite algo para pesquisar.';
+      return;
+    }
+    // Aqui você pode substituir para fazer uma busca real
+    result.textContent = `Você pesquisou por: "${query}"`;
+  }
+
+  button.addEventListener('click', performSearch);
+
+  input.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      performSearch();
+    }
+  });
+</script>
 
 <div class="flex items-center space-x-4">
         <!-- Carrinho com contador -->
