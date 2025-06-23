@@ -2,16 +2,91 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Produtos | Minha Casa Decor</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f9f9f9;
+    }
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      border: 2px solid #333;
+      border-radius: 25px;
+      overflow: hidden;
+      background: white;
+    }
+    input[type="text"] {
+      flex: 1;
+      border: none;
+      padding: 10px 15px;
+      font-size: 16px;
+      outline: none;
+    }
+    button {
+      background: #333;
+      border: none;
+      color: white;
+      padding: 0 20px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button:hover {
+      background: #555;
+    }
+    .results-list {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 150px;
+    }
+    .results-list ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    .results-list li {
+      display: flex;
+      align-items: center;
+      padding: 10px 5px;
+      border-bottom: 1px solid #eee;
+    }
+    .results-list li img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 15px;
+    }
+    .product-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .product-name {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .product-price {
+      color: #008000;
+      font-weight: 600;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body>
 
-  <header class="bg-white shadow-sm py-4">
+  <header class="bg-white shadow-sm py-4 mb-6">
     <div class="container mx-auto px-4 flex justify-between items-center flex-wrap">
       <a href="#" class="text-3xl font-bold text-gray-800 tracking-tight" aria-label="Minha Casa Decor - Home">Minha Casa Decor</a>
-
       <nav class="hidden md:flex space-x-6" aria-label="Menu principal">
         <a href="index.html" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Início</a>
         <a href="produtos.html" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Produtos</a>
@@ -19,117 +94,49 @@
         <a href="ideias.html" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Ideias</a>
         <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Contato</a>
       </nav>
+    </div>
+  </header>
 
-    <title>Barra de Pesquisa com Lupa</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 30px;
-    background: #f9f9f9;
-  }
-  .search-container {
-    max-width: 600px;
-    margin: 0 auto 20px auto;
-    display: flex;
-    border: 2px solid #333;
-    border-radius: 25px;
-    overflow: hidden;
-    background: white;
-  }
-  input[type="text"] {
-    flex: 1;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    outline: none;
-  }
-  button {
-    background: #333;
-    border: none;
-    color: white;
-    padding: 0 20px;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  button:hover {
-    background: #555;
-  }
-  .results-list {
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    border: 2px solid #333;
-    border-radius: 10px;
-    padding: 10px;
-    min-height: 150px;
-  }
-  .results-list ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  .results-list li {
-    display: flex;
-    align-items: center;
-    padding: 10px 5px;
-    border-bottom: 1px solid #eee;
-  }
-  .results-list li img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-right: 15px;
-  }
-  .product-info {
-    display: flex;
-    flex-direction: column;
-  }
-  .product-name {
-    font-weight: bold;
-    font-size: 16px;
-  }
-  .product-price {
-    color: #008000;
-    font-weight: 600;
-  }
-</style>
-</head>
-<body>
+  <div class="search-container mb-6">
+    <input type="text" id="searchInput" placeholder="Pesquise um produto..." aria-label="Pesquisar produto" />
+    <button id="searchBtn" aria-label="Pesquisar">🔍</button>
+  </div>
 
-<div class="search-container">
-  <input type="text" id="searchInput" placeholder="Pesquise um produto..." />
-  <button id="searchBtn" aria-label="Pesquisar">🔍</button>
-</div>
+  <div class="results-list" id="resultsList">
+    <p>Digite para pesquisar um produto.</p>
+  </div>
 
-<div class="results-list" id="resultsList">
-  <p>Digite para pesquisar um produto.</p>
-</div>
+  <main class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold text-center mb-6">Nossos Produtos</h1>
+    <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+  </main>
 
 <script>
-  const Produtos = [
-     "Cadeira Elegante";
-     "Mesa de Centro";
-     "Poltrona";
-     "Mesa Lateral";
-     "Sofá Redondo";
-     "Rede Cadeira de Balanço";
-     "Recamier Banco Puff com Bau";
-     "Kit de Nicho";
-     "Frigobar";
-     "Espelho ondulado"
+  // Array completo de produtos com nome, preço e imagem
+  const produtos = [
+    { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
+    { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
+    { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
+    { nome: "Mesa Lateral", preco: 1308.00, imagem: "https://i.pinimg.com/736x/0b/2f/2f/0b2f2ff20f2058d5db6c1723aec5bcb4.jpg" },
+    { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
+    { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg" },
+    { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
+    { nome: "Kit de Nicho", preco: 300.00, imagem: "https://i.pinimg.com/736x/60/6b/f9/606bf992e0fa58769005d43ac482a75e.jpg" },
+    { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" },
+    { nome: "Espelho ondulado", preco: 284.90, imagem: "https://i.pinimg.com/736x/69/b9/d2/69b9d2a3567d8610f465e69e5f726d80.jpg" }
   ];
 
   const input = document.getElementById('searchInput');
   const button = document.getElementById('searchBtn');
   const resultsList = document.getElementById('resultsList');
+  const listaProdutos = document.getElementById('lista-produtos');
 
+  // Função para formatar preço em moeda BRL
   function formatPrice(price) {
     return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
+  // Função que executa a busca
   function performSearch() {
     const query = input.value.trim().toLowerCase();
 
@@ -158,6 +165,7 @@
     resultsList.innerHTML = listHTML;
   }
 
+  // Eventos para o botão e tecla Enter
   button.addEventListener('click', performSearch);
   input.addEventListener('keydown', event => {
     if(event.key === 'Enter'){
@@ -165,145 +173,27 @@
     }
   });
 
-  // Opcional: mostrar instrução inicial
+  // Inicializa a lista com mensagem
   resultsList.innerHTML = '<p>Digite para pesquisar um produto.</p>';
+
+  // Função para mostrar todos os produtos na página principal
+  function mostrarProdutos() {
+    listaProdutos.innerHTML = '';
+    produtos.forEach(produto => {
+      const card = document.createElement('div');
+      card.classList.add('border', 'rounded', 'p-4', 'bg-white', 'shadow-sm', 'flex', 'flex-col', 'items-center');
+      card.innerHTML = `
+        <img src="${produto.imagem}" alt="${produto.nome}" class="mb-4 w-full max-h-48 object-cover rounded" onerror="this.src='https://via.placeholder.com/150?text=Sem+Imagem'">
+        <h2 class="text-lg font-semibold mb-2 text-center">${produto.nome}</h2>
+        <p class="text-green-600 font-bold">${formatPrice(produto.preco)}</p>
+      `;
+      listaProdutos.appendChild(card);
+    });
+  }
+
+  mostrarProdutos();
+
 </script>
 
-<div class="flex items-center space-x-4">
-        <!-- Carrinho com contador -->
-        <button id="cart-button" aria-label="Carrinho de compras"
-          class="relative text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H3m4 8V19a2 2 0 002 2h10a2 2 0 002-2V13m-4 0l-2 2m0 0l-2-2" />
-          </svg>
-          <!-- Contador -->
-          <span id="cart-count"
-            class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full px-1 text-xs font-bold min-w-[18px] text-center">0</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <header class="bg-white shadow p-4">
-    <h1 class="text-2xl font-bold text-center">Nossos Produtos</h1>
-
-  <main class="container mx-auto p-6">
-    <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
-  </main>
-
- 
-  <script>
-    const produtos = 
-      { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
-      { nome: "Mesa de Centro"; preco: 499.00; imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" };
-      { nome: "Poltrona"; preco: 199.99; imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" };
-      { nome: "Mesa Lateral"; preco: 1308.00; imagem: "https://i.pinimg.com/736x/0b/2f/2f/0b2f2ff20f2058d5db6c1723aec5bcb4.jpg" };
-      { nome: "Sofá Redondo"; preco: 2000.00; imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" };
-      { nome: "Rede Cadeira de Balanço"; preco: 899.90; imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg" };
-      { nome: "Recamier Banco Puff com Bau"; preco: 550.00; imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg"};
-      { nome: "Kit de Nicho"; preco: 300.00; imagem: "https://i.pinimg.com/736x/60/6b/f9/606bf992e0fa58769005d43ac482a75e.jpg" };
-      { nome: "Frigobar"; preco: 499.99; imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" };
-      { nome: "Espelho ondulado"; preco: 284.90; imagem: "https://i.pinimg.com/736x/69/b9/d2/69b9d2a3567d8610f465e69e5f726d80.jpg" }
-    ;
-
-    function atualizarContadorCarrinho() {
-      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-      const contador = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
-      document.getElementById('cart-count').textContent = contador;
-    }
-
-    function atualizarModalCarrinho() {
-      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-      const listaCarrinho = document.getElementById('cart-items');
-      listaCarrinho.innerHTML = '';
-
-      if (carrinho.length === 0) {
-        listaCarrinho.innerHTML = '<li class="text-gray-600">Seu carrinho está vazio.</li>';
-        document.getElementById('cart-total').textContent = '0,00';
-        return;
-      }
-
-      let total = 0;
-      carrinho.forEach((item, i) => {
-        const li = document.createElement('li');
-        li.className = 'border-b py-2 flex justify-between items-center space-x-2';
-        total += item.preco * item.quantidade;
-        li.innerHTML = `
-          <div class="flex-1">
-            <strong>${item.nome}</strong><br />
-            R$ ${item.preco.toFixed(2).replace('.', ',')} x ${item.quantidade}
-          </div>
-          <div class="flex items-center space-x-2">
-            <span class="font-semibold">R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
-            <button data-index="${i}" class="text-red-600 hover:text-red-800 remover-item text-xl font-bold">×</button>
-          </div>
-        `;
-        listaCarrinho.appendChild(li);
-      });
-
-      document.getElementById('cart-total').textContent = total.toFixed(2).replace('.', ',');
-    }
-
-    function adicionarAoCarrinho(produto) {
-      let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-      const index = carrinho.findIndex(item => item.nome === produto.nome);
-      if (index >= 0) {
-        carrinho[index].quantidade++;
-      } else {
-        carrinho.push({ ...produto, quantidade: 1 });
-      }
-      localStorage.setItem('carrinho', JSON.stringify(carrinho));
-      atualizarContadorCarrinho();
-    }
-
-    const container = document.getElementById("lista-produtos");
-
-    produtos.forEach(produto => {
-      const card = document.createElement("div");
-      card.className = "bg-white rounded shadow p-4 flex flex-col items-center";
-      card.innerHTML = `
-        <img src="${produto.imagem}" alt="${produto.nome}" class="w-full h-48 object-cover mb-4 rounded" />
-        <h3 class="text-lg font-semibold">${produto.nome}</h3>
-        <p class="text-gray-600">R$ ${produto.preco.toFixed(2).replace('.', ',')}</p>
-        <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 add-to-cart-btn">Adicionar ao Carrinho</button>
-      `;
-      container.appendChild(card);
-      card.querySelector('.add-to-cart-btn').addEventListener('click', () => {
-        adicionarAoCarrinho(produto);
-        alert(`${produto.nome} adicionado ao carrinho!`);
-      });
-    });
-
-    document.getElementById('view-cart-btn').addEventListener('click', () => {
-      atualizarModalCarrinho();
-      document.getElementById('cart-modal').classList.remove('opacity-0', 'pointer-events-none');
-    });
-
-    document.getElementById('close-cart').addEventListener('click', () => {
-      document.getElementById('cart-modal').classList.add('opacity-0', 'pointer-events-none');
-    });
-
-    document.getElementById('cart-items').addEventListener('click', (e) => {
-      if (e.target.classList.contains('remover-item')) {
-        const index = e.target.getAttribute('data-index');
-        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        carrinho.splice(index, 1);
-        localStorage.setItem('carrinho', JSON.stringify(carrinho));
-        atualizarModalCarrinho();
-        atualizarContadorCarrinho();
-      }
-    });
-
-    document.getElementById('checkout-btn').addEventListener('click', () => {
-      alert('Compra finalizada! Obrigado pela preferência.');
-      localStorage.removeItem('carrinho');
-      atualizarModalCarrinho();
-      atualizarContadorCarrinho();
-      document.getElementById('cart-modal').classList.add('opacity-0', 'pointer-events-none');
-    });
-
-    atualizarContadorCarrinho();
-  </script>
 </body>
 </html>
