@@ -21,3 +21,30 @@ button i {
   color: #555;
   font-size: 16px;
 }
+
+#itens-carrinho li div {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+#itens-carrinho button {
+  background-color: #333;
+  border: none;
+  color: white;
+  padding: 3px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  user-select: none;
+}
+
+#itens-carrinho button:hover {
+  background-color: #555;
+}
+
+#itens-carrinho .quantidade {
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+}

@@ -308,6 +308,70 @@
       carrinhoTotal.textContent = `Total: ${formatPrice(total)}`;
     }
 
+// Atualiza total
+      const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+      document.getElementById('cart-total').textContent = total.toFixed(2).replace('.', ',');
+
+      // Eventos para remover item
+      document.querySelectorAll('.remover-item').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const idx = Number(e.target.dataset.index);
+          carrinho.splice(idx, 1);
+          atualizarContador();
+          atualizarModal();
+        });
+      });
+
+      // Eventos para alterar quantidade
+      document.querySelectorAll('.quantidade-input').forEach(input => {
+        input.addEventListener('change', e => {
+          const idx = Number(e.target.dataset.index);
+          let val = parseInt(e.target.value);
+          if (isNaN(val) || val < 1) {
+            val = 1;
+            e.target.value = 1;
+          }
+          carrinho[idx].quantidade = val;
+          atualizarContador();
+          atualizarModal();
+        });
+      });
+
+    // Função para adicionar produto ao carrinho (ou aumentar quantidade)
+    function adicionarProduto(nome, preco) {
+      const idx = carrinho.findIndex(p => p.nome === nome);
+      if (idx >= 0) {
+        carrinho[idx].quantidade++;
+      } else {
+        carrinho.push({ nome, preco, quantidade: 1 });
+      }
+      atualizarContador();
+    }
+
+    // Abrir modal
+    const cartButton = document.getElementById('cart-button');
+    const cartModal = document.getElementById('cart-modal');
+    const closeCartBtn = document.getElementById('close-cart');
+
+    cartButton.addEventListener('click', () => {
+      atualizarModal();
+      cartModal.classList.remove('opacity-0', 'pointer-events-none');
+    });
+
+    closeCartBtn.addEventListener('click', () => {
+      cartModal.classList.add('opacity-0', 'pointer-events-none');
+    });
+
+    // Adicionar produtos via botões
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nome = btn.dataset.produto;
+        const preco = Number(btn.dataset.preco);
+        adicionarProduto(nome, preco);
+        alert(`${nome} adicionado ao carrinho!`);
+      });
+    });
+
     function performSearch() {
       const query = input.value.trim().toLowerCase();
 

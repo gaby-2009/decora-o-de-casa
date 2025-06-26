@@ -1,94 +1,55 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Busca com Autocomplete</title>
-  <style>
-    #suggestions {
-      border: 1px solid #ccc;
-      max-height: 150px;
-      overflow-y: auto;
-      position: absolute;
-      background-color: white;
-      width: 100%;
-      display: none;
-    }
-    .suggestion-item {
-      padding: 8px;
-      cursor: pointer;
-    }
-    .suggestion-item:hover {
-      background-color: #f0f0f0;
-    }
-  </style>
-</head>
-<body>
+function atualizarCarrinho() {
+  const itens = Object.values(carrinho);
+  if (itens.length === 0) {
+    carrinhoSection.hidden = true;
+    return;
+  }
+  carrinhoSection.hidden = false;
+  itensCarrinhoList.innerHTML = '';
 
-  <input type="text" name="q" id="searchInput" placeholder="Buscar..." />
-  <div id="suggestions"></div> <!-- Aqui serão mostradas as sugestões -->
+  let total = 0;
 
-  <script>
-    const searchInput = document.getElementById('searchInput');
-    const suggestionsBox = document.getElementById('suggestions');
+  itens.forEach(({ produto, quantidade }) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <span>${produto.nome}</span>
+      <div>
+        <button class="btn-diminuir" aria-label="Diminuir quantidade de ${produto.nome}">-</button>
+        <span class="quantidade">${quantidade}</span>
+        <button class="btn-aumentar" aria-label="Aumentar quantidade de ${produto.nome}">+</button>
+        <button class="btn-remover" aria-label="Remover ${produto.nome} do carrinho">🗑️</button>
+      </div>
+      <span>${formatPrice(produto.preco * quantidade)}</span>
+    `;
 
-    // Lista local de sugestões (exemplo estático)
-    const suggestions = ["Cadeira", "Sofá", "Mesa", "Poltrona", "Armário", "Cama", "Estante"];
+    itensCarrinhoList.appendChild(li);
 
-    searchInput.addEventListener('input', function() {
-      const query = searchInput.value.toLowerCase(); // Captura o que o usuário digitou
-      suggestionsBox.innerHTML = ''; // Limpa sugestões anteriores
+    const btnDiminuir = li.querySelector('.btn-diminuir');
+    const btnAumentar = li.querySelector('.btn-aumentar');
+    const btnRemover = li.querySelector('.btn-remover');
 
-      if (query.length > 0) {
-        // Filtra as sugestões com base no que o usuário digitou
-        const filteredSuggestions = suggestions.filter(item => item.toLowerCase().includes(query));
-
-        // Exibe as sugestões filtradas
-        filteredSuggestions.forEach(item => {
-          const suggestionItem = document.createElement('div');
-          suggestionItem.classList.add('suggestion-item');
-          suggestionItem.textContent = item;
-          suggestionItem.addEventListener('click', function() {
-            searchInput.value = item;
-            suggestionsBox.style.display = 'none'; // Esconde as sugestões
-          });
-          suggestionsBox.appendChild(suggestionItem);
-        });
-
-        // Mostra o box de sugestões
-        suggestionsBox.style.display = filteredSuggestions.length > 0 ? 'block' : 'none';
+    btnDiminuir.addEventListener('click', () => {
+      if (carrinho[produto.nome].quantidade > 1) {
+        carrinho[produto.nome].quantidade--;
       } else {
-        suggestionsBox.style.display = 'none'; // Esconde as sugestões se o campo estiver vazio
+        delete carrinho[produto.nome];
       }
+      atualizarCarrinho();
     });
 
-    // Buscar sugestões via API (substituir /api/sugestoes com a URL correta)
-    searchInput.addEventListener('input', function() {
-      const query = searchInput.value.toLowerCase();
-
-      if (query.length > 0) {
-        fetch(`/api/sugestoes?q=${query}`)
-          .then(response => response.json())
-          .then(data => {
-            suggestionsBox.innerHTML = ''; // Limpa sugestões anteriores
-            data.forEach(item => {
-              const suggestionItem = document.createElement('div');
-              suggestionItem.classList.add('suggestion-item');
-              suggestionItem.textContent = item;
-              suggestionItem.addEventListener('click', function() {
-                searchInput.value = item;
-                suggestionsBox.style.display = 'none'; // Esconde as sugestões
-              });
-              suggestionsBox.appendChild(suggestionItem);
-            });
-            suggestionsBox.style.display = data.length > 0 ? 'block' : 'none';
-          })
-          .catch(error => console.error('Erro ao obter sugestões:', error));
-      } else {
-        suggestionsBox.style.display = 'none';
-      }
+    btnAumentar.addEventListener('click', () => {
+      carrinho[produto.nome].quantidade++;
+      atualizarCarrinho();
     });
-  </script>
 
-</body>
-</html>
+    btnRemover.addEventListener('click', () => {
+      delete carrinho[produto.nome];
+      atualizarCarrinho();
+    });
+
+    total += produto.preco * quantidade;
+  });
+
+  carrinhoTotal.textContent = `Total: ${formatPrice(total)}`;
+}
+
