@@ -6,6 +6,7 @@
   <title>Produtos | Minha Casa Decor</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+     <style>
     body {
       font-family: Arial, sans-serif;
       padding: 30px;
@@ -175,9 +176,11 @@
       padding-top: 10px;
     }
   </style>
+  </style>
 </head>
 <body>
 
+  <!-- Cabeçalho e navegação -->
   <header class="bg-white shadow-sm py-4 mb-6">
     <div class="container mx-auto px-4 flex justify-between items-center flex-wrap">
       <a href="#" class="text-3xl font-bold text-gray-800 tracking-tight" aria-label="Minha Casa Decor - Home">Minha Casa Decor</a>
@@ -191,107 +194,7 @@
     </div>
   </header>
 
-  <section id="carrinho" aria-label="Carrinho de compras" hidden>
-    <h2>Seu Carrinho</h2>
-    <ul id="itens-carrinho"></ul>
-    <div id="carrinho-total">Total: R$ 0,00</div>
-  </section>
-
-  // Carrinho: objeto com nome do produto como chave, valor é objeto com produto e quantidade
-  const carrinho = {};
-
-  function formatPrice(price) {
-    return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  }
-
-  function mostrarProdutos(produtosExibir = produtos) {
-    listaProdutos.innerHTML = '';
-    produtosExibir.forEach((produto, index) => {
-      const card = document.createElement('div');
-      card.classList.add('produto-card');
-      card.setAttribute('tabindex', '0'); // para ser focável
-      card.setAttribute('role', 'button');
-      card.setAttribute('aria-pressed', 'false');
-      card.setAttribute('aria-label', `Adicionar ${produto.nome} ao carrinho`);
-      card.innerHTML = `
-        <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/250x180?text=Sem+Imagem'">
-        <div class="produto-nome">${produto.nome}</div>
-        <div class="produto-preco">${formatPrice(produto.preco)}</div>
-      `;
-      // Evento clique para adicionar ao carrinho
-      card.addEventListener('click', () => {
-        adicionarAoCarrinho(produto);
-      });
-      // Evento tecla Enter para acessibilidade
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          adicionarAoCarrinho(produto);
-        }
-      });
-      listaProdutos.appendChild(card);
-    });
-  }
-
-  function adicionarAoCarrinho(produto) {
-    if (carrinho[produto.nome]) {
-      carrinho[produto.nome].quantidade++;
-    } else {
-      carrinho[produto.nome] = {
-        produto: produto,
-        quantidade: 1
-      };
-    }
-    atualizarCarrinho();
-  }
-
-  function atualizarCarrinho() {
-    const itens = Object.values(carrinho);
-    if (itens.length === 0) {
-      carrinhoSection.hidden = true;
-      return;
-    }
-    carrinhoSection.hidden = false;
-    itensCarrinhoList.innerHTML = '';
-
-    let total = 0;
-
-    itens.forEach(({ produto, quantidade }) => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <span>${produto.nome}</span>
-        <span class="quantidade">x${quantidade}</span>
-        <span>${formatPrice(produto.preco * quantidade)}</span>
-      `;
-      itensCarrinhoList.appendChild(li);
-      total += produto.preco * quantidade;
-    });
-
-    carrinhoTotal.textContent = `Total: ${formatPrice(total)}`;
-  }
-
-  // Adiciona evento clique para cada item da lista de resultados para adicionar ao carrinho
-    const items = resultsList.querySelectorAll('li');
-    items.forEach((item, i) => {
-      item.addEventListener('click', () => {
-        adicionarAoCarrinho(filtered[i]);
-      });
-      item.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          adicionarAoCarrinho(filtered[i]);
-        }
-      });
-    });
-  
-
-  button.addEventListener('click', performSearch);
-  input.addEventListener('keydown', event => {
-    if(event.key === 'Enter'){
-      performSearch();
-    }
-  });
-
+  <!-- Pesquisa -->
   <div class="search-container mb-6">
     <input type="text" id="searchInput" placeholder="Pesquise um produto..." aria-label="Pesquisar produto" />
     <button id="searchBtn" aria-label="Pesquisar">🔍</button>
@@ -301,72 +204,162 @@
     <p>Digite para pesquisar um produto.</p>
   </div>
 
+  <!-- Exibição dos produtos -->
   <main>
     <h1 class="text-2xl font-bold text-center mb-6">Nossos Produtos</h1>
     <div id="lista-produtos"></div>
   </main>
 
-  
+  <!-- Carrinho -->
+  <section id="carrinho" aria-label="Carrinho de compras" hidden>
+    <h2>Seu Carrinho</h2>
+    <ul id="itens-carrinho"></ul>
+    <div id="carrinho-total">Total: R$ 0,00</div>
+  </section>
 
-<script>
-  const produtos = [
-    { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
-    { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
-    { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
-    { nome: "Mesa Lateral", preco: 1308.00, imagem: "https://i.pinimg.com/736x/0b/2f/2f/0b2f2ff20f2058d5db6c1723aec5bcb4.jpg" },
-    { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
-    { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg" },
-    { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
-    { nome: "Kit de Nicho", preco: 300.00, imagem: "https://i.pinimg.com/736x/60/6b/f9/606bf992e0fa58769005d43ac482a75e.jpg" },
-    { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" },
-    { nome: "Espelho ondulado", preco: 284.90, imagem: "https://i.pinimg.com/736x/69/b9/d2/69b9d2a3567d8610f465e69e5f726d80.jpg" }
-  ];
+  <script>
+    const produtos = [
+      { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
+      { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
+      { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
+      { nome: "Mesa Lateral", preco: 1308.00, imagem: "https://i.pinimg.com/736x/0b/2f/2f/0b2f2ff20f2058d5db6c1723aec5bcb4.jpg" },
+      { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
+      { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg" },
+      { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
+      { nome: "Kit de Nicho", preco: 300.00, imagem: "https://i.pinimg.com/736x/60/6b/f9/606bf992e0fa58769005d43ac482a75e.jpg" },
+      { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" },
+      { nome: "Espelho ondulado", preco: 284.90, imagem: "https://i.pinimg.com/736x/69/b9/d2/69b9d2a3567d8610f465e69e5f726d80.jpg" }
+    ];
 
-  const input = document.getElementById('searchInput');
-  const button = document.getElementById('searchBtn');
-  const resultsList = document.getElementById('resultsList');
-  const listaProdutos = document.getElementById('lista-produtos');
-  const carrinhoSection = document.getElementById('carrinho');
-  const itensCarrinhoList = document.getElementById('itens-carrinho');
-  const carrinhoTotal = document.getElementById('carrinho-total');
+    const input = document.getElementById('searchInput');
+    const button = document.getElementById('searchBtn');
+    const resultsList = document.getElementById('resultsList');
+    const listaProdutos = document.getElementById('lista-produtos');
+    const carrinhoSection = document.getElementById('carrinho');
+    const itensCarrinhoList = document.getElementById('itens-carrinho');
+    const carrinhoTotal = document.getElementById('carrinho-total');
 
-  
-  // Busca produtos pelo nome e mostra na resultsList
-  function performSearch() {
-    const query = input.value.trim().toLowerCase();
+    const carrinho = {};
 
-    if (query === '') {
-      resultsList.innerHTML = '<p>Por favor, digite algo para pesquisar.</p>';
-      return;
+    function formatPrice(price) {
+      return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    const filtered = produtos.filter(produto => produto.nome.toLowerCase().includes(query));
-
-    if (filtered.length === 0) {
-      resultsList.innerHTML = `<p>Nenhum produto encontrado para "<strong>${query}</strong>".</p>`;
-      return;
+    function mostrarProdutos(produtosExibir = produtos) {
+      listaProdutos.innerHTML = '';
+      produtosExibir.forEach((produto, index) => {
+        const card = document.createElement('div');
+        card.classList.add('produto-card');
+        card.setAttribute('tabindex', '0'); 
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-pressed', 'false');
+        card.setAttribute('aria-label', `Adicionar ${produto.nome} ao carrinho`);
+        card.innerHTML = `
+          <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/250x180?text=Sem+Imagem'">
+          <div class="produto-nome">${produto.nome}</div>
+          <div class="produto-preco">${formatPrice(produto.preco)}</div>
+        `;
+        card.addEventListener('click', () => {
+          adicionarAoCarrinho(produto);
+        });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            adicionarAoCarrinho(produto);
+          }
+        });
+        listaProdutos.appendChild(card);
+      });
     }
 
-    const listHTML = '<ul>' + filtered.map(produto => `
-      <li tabindex="0" role="button" aria-pressed="false" aria-label="Adicionar ${produto.nome} ao carrinho">
-        <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/60x60?text=Sem+Imagem'" />
-        <div class="product-info">
-          <span class="product-name">${produto.nome}</span>
-          <span class="product-price">${formatPrice(produto.preco)}</span>
-        </div>
-      </li>
-    `).join('') + '</ul>';
+    function adicionarAoCarrinho(produto) {
+      if (carrinho[produto.nome]) {
+        carrinho[produto.nome].quantidade++;
+      } else {
+        carrinho[produto.nome] = {
+          produto: produto,
+          quantidade: 1
+        };
+      }
+      atualizarCarrinho();
+    }
 
-    resultsList.innerHTML = listHTML;
+    function atualizarCarrinho() {
+      const itens = Object.values(carrinho);
+      if (itens.length === 0) {
+        carrinhoSection.hidden = true;
+        return;
+      }
+      carrinhoSection.hidden = false;
+      itensCarrinhoList.innerHTML = '';
 
-    
-  // Inicializa
-  resultsList.innerHTML = '<p>Digite para pesquisar um produto.</p>';
-  mostrarProdutos();
-}
+      let total = 0;
 
+      itens.forEach(({ produto, quantidade }) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${produto.nome}</span>
+          <span class="quantidade">x${quantidade}</span>
+          <span>${formatPrice(produto.preco * quantidade)}</span>
+        `;
+        itensCarrinhoList.appendChild(li);
+        total += produto.preco * quantidade;
+      });
 
-</script>
+      carrinhoTotal.textContent = `Total: ${formatPrice(total)}`;
+    }
+
+    function performSearch() {
+      const query = input.value.trim().toLowerCase();
+
+      if (query === '') {
+        resultsList.innerHTML = '<p>Por favor, digite algo para pesquisar.</p>';
+        return;
+      }
+
+      const filtered = produtos.filter(produto => produto.nome.toLowerCase().includes(query));
+
+      if (filtered.length === 0) {
+        resultsList.innerHTML = `<p>Nenhum produto encontrado para "<strong>${query}</strong>".</p>`;
+        return;
+      }
+
+      const listHTML = '<ul>' + filtered.map(produto => `
+        <li tabindex="0" role="button" aria-pressed="false" aria-label="Adicionar ${produto.nome} ao carrinho">
+          <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/60x60?text=Sem+Imagem'" />
+          <div class="product-info">
+            <span class="product-name">${produto.nome}</span>
+            <span class="product-price">${formatPrice(produto.preco)}</span>
+          </div>
+        </li>
+      `).join('') + '</ul>';
+
+      resultsList.innerHTML = listHTML;
+
+      const items = resultsList.querySelectorAll('li');
+      items.forEach((item, i) => {
+        item.addEventListener('click', () => {
+          adicionarAoCarrinho(filtered[i]);
+        });
+        item.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            adicionarAoCarrinho(filtered[i]);
+          }
+        });
+      });
+    }
+
+    button.addEventListener('click', performSearch);
+    input.addEventListener('keydown', event => {
+      if(event.key === 'Enter'){
+        performSearch();
+      }
+    });
+
+    // Inicializa
+    mostrarProdutos();
+  </script>
 
 </body>
 </html>
