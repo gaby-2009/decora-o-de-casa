@@ -29,6 +29,11 @@
   <div id="suggestions"></div> <!-- Aqui serão mostradas as sugestões -->
 
   <script>
+    const searchInput = document.getElementById('searchInput');
+    const suggestionsBox = document.getElementById('suggestions');
+
+    // Lista local de sugestões (exemplo estático)
+    const suggestions = ["Cadeira", "Sofá", "Mesa", "Poltrona", "Armário", "Cama", "Estante"];
 
     searchInput.addEventListener('input', function() {
       const query = searchInput.value.toLowerCase(); // Captura o que o usuário digitou
@@ -44,47 +49,46 @@
           suggestionItem.classList.add('suggestion-item');
           suggestionItem.textContent = item;
           suggestionItem.addEventListener('click', function() {
-            searchInput.value = item; 'poltrona'
+            searchInput.value = item;
             suggestionsBox.style.display = 'none'; // Esconde as sugestões
           });
           suggestionsBox.appendChild(suggestionItem);
         });
 
         // Mostra o box de sugestões
-        suggestionsBox.style.display = filteredSuggestions.length> 0 ? 'block' : 'none';
+        suggestionsBox.style.display = filteredSuggestions.length > 0 ? 'block' : 'none';
       } else {
         suggestionsBox.style.display = 'none'; // Esconde as sugestões se o campo estiver vazio
       }
     });
+
+    // Buscar sugestões via API (substituir /api/sugestoes com a URL correta)
+    searchInput.addEventListener('input', function() {
+      const query = searchInput.value.toLowerCase();
+
+      if (query.length > 0) {
+        fetch(`/api/sugestoes?q=${query}`)
+          .then(response => response.json())
+          .then(data => {
+            suggestionsBox.innerHTML = ''; // Limpa sugestões anteriores
+            data.forEach(item => {
+              const suggestionItem = document.createElement('div');
+              suggestionItem.classList.add('suggestion-item');
+              suggestionItem.textContent = item;
+              suggestionItem.addEventListener('click', function() {
+                searchInput.value = item;
+                suggestionsBox.style.display = 'none'; // Esconde as sugestões
+              });
+              suggestionsBox.appendChild(suggestionItem);
+            });
+            suggestionsBox.style.display = data.length > 0 ? 'block' : 'none';
+          })
+          .catch(error => console.error('Erro ao obter sugestões:', error));
+      } else {
+        suggestionsBox.style.display = 'none';
+      }
+    });
   </script>
-
-  searchInput.addEventListener('input', function() {
-  const query = searchInput.value.toLowerCase();
-
-  if (query.length > 0) {
-    fetch(`/api/sugestoes?q=${query}`)
-      .then(response => response.json())
-      .then(data => {
-        suggestionsBox.innerHTML = '';
-        data.forEach(item => {
-          const suggestionItem = document.createElement('div');
-          suggestionItem.classList.add('suggestion-item');
-          suggestionItem.textContent = item;
-          suggestionItem.addEventListener('click', function() {
-            searchInput.value = item;
-            suggestionsBox.style.display = 'none';
-          });
-          suggestionsBox.appendChild(suggestionItem);
-        });
-        suggestionsBox.style.display = data.length > 0 ? 'block' : 'none';
-      })
-      .catch(error => console.error('Erro ao obter sugestões:', error))
-  } else {
-    suggestionsBox.style.display = 'none'
-  }
-})
-
 
 </body>
 </html>
-
