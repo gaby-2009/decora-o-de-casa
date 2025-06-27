@@ -73,6 +73,27 @@
       border-radius: 8px;
       margin-right: 15px;
     }
+    .product-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .product-name {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .product-price {
+      color: #008000;
+      font-weight: 600;
+    }
+
+    /* Lista de produtos (cards) */
+    #lista-produtos {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+      gap: 20px;
+    }
     .produto-card {
       border: 1px solid #ccc;
       border-radius: 8px;
@@ -107,74 +128,165 @@
       font-weight: 600;
       font-size: 16px;
     }
-    #carrinho {
-      max-width: 600px;
-      margin: 30px auto 0 auto;
-      background: white;
-      border: 2px solid #333;
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    /* Botão do carrinho fixo */
+    #cart-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      z-index: 1000;
     }
-    #carrinho h2 {
-      margin-bottom: 10px;
-      font-size: 22px;
+    #cart-count {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: red;
+      color: white;
+      font-size: 12px;
       font-weight: bold;
-      text-align: center;
+      padding: 2px 6px;
+      border-radius: 50%;
+      display: none;
     }
-    #carrinho ul {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 10px 0;
-      max-height: 200px;
+
+    /* Modal do Carrinho */
+    #cart-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1100;
+    }
+    #cart-modal.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #cart-modal > div {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
       overflow-y: auto;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
-    #carrinho li {
+    #close-cart {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #555;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+    #close-cart:hover {
+      color: #000;
+    }
+    #cart-items {
+      max-height: 250px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      padding-left: 0;
+      list-style: none;
+    }
+    #cart-items li {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 5px;
       display: flex;
       justify-content: space-between;
-      padding: 8px 6px;
-      border-bottom: 1px solid #ddd;
-      font-size: 16px;
-    }
-    #carrinho-total {
-      font-weight: 700;
-      font-size: 18px;
-      text-align: right;
-      border-top: 1px solid #333;
-      padding-top: 10px;
-    }
-    .acoes {
-      display: flex;
-      gap: 10px;
       align-items: center;
+      gap: 10px;
     }
-    .btn-ajustar-quantidade {
-      background-color: #f3f4f6;
-      border: 1px solid #ddd;
-      padding: 5px 10px;
+    #cart-items li div.flex-1 {
+      flex: 1;
+    }
+    .quantidade-input {
+      width: 50px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 3px 6px;
+      text-align: center;
+    }
+    .remover-item {
+      background: none;
+      border: none;
+      color: red;
+      font-size: 22px;
       cursor: pointer;
-      border-radius: 5px;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+    .remover-item:hover {
+      color: darkred;
+    }
+
+    /* Checkout form */
+    #checkout-form label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    #checkout-form input, 
+    #checkout-form textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      resize: vertical;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    #checkout-form input:focus, 
+    #checkout-form textarea:focus {
+      border-color: #2563eb;
+      outline: none;
+      box-shadow: 0 0 5px #2563eb;
+    }
+    #checkout-form button[type="submit"] {
+      background-color: #22c55e;
+      color: white;
+      font-weight: 700;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      width: 100%;
       transition: background-color 0.3s;
     }
-    .btn-ajustar-quantidade:hover {
-      background-color: #d1d5db;
-    }
-    .btn-remover {
-      background-color: #f8d7da;
-      border: 1px solid #f5c6cb;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-    .btn-remover:hover {
-      background-color: #f5c6cb;
+    #checkout-form button[type="submit"]:hover {
+      background-color: #16a34a;
     }
   </style>
 </head>
 <body>
 
-  <!-- Cabeçalho e navegação -->
+ <!-- Cabeçalho e navegação -->
   <header class="bg-white shadow-sm py-4 mb-6">
     <div class="container mx-auto px-4 flex justify-between items-center flex-wrap">
       <a href="#" class="text-3xl font-bold text-gray-800 tracking-tight" aria-label="Minha Casa Decor - Home">Minha Casa Decor</a>
@@ -183,125 +295,216 @@
         <a href="produtos.html" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Produtos</a>
         <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Categorias</a>
         <a href="ideias.html" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Ideias</a>
+        <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Blog</a>
+        <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Sobre</a>
         <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Contato</a>
       </nav>
+      <button id="cart-button" aria-label="Abrir carrinho">
+        🛒
+        <span id="cart-count">0</span>
+      </button>
     </div>
   </header>
 
   <!-- Pesquisa -->
-  <div class="search-container mb-6">
-    <input type="text" id="searchInput" placeholder="Pesquise um produto..." aria-label="Pesquisar produto" />
-    <button id="searchBtn" aria-label="Pesquisar">🔍</button>
+  <div class="search-container">
+    <input type="text" id="search-input" placeholder="Busque um produto, categoria ou palavra-chave" aria-label="Campo de busca" />
+    <button id="search-button" aria-label="Buscar">
+      🔍
+    </button>
   </div>
 
-  <div class="results-list" id="resultsList">
-    <p>Digite para pesquisar um produto.</p>
+  <!-- Resultados da busca -->
+  <div class="results-list" aria-live="polite" aria-atomic="true">
+    <ul id="search-results"></ul>
   </div>
 
-  <!-- Exibição dos produtos -->
-  <main>
-    <h1 class="text-2xl font-bold text-center mb-6">Nossos Produtos</h1>
-    <div id="lista-produtos"></div>
-  </main>
+ <!-- Modal do Carrinho -->
+  <div id="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-describedby="cart-description">
+    <div>
+      <button id="close-cart" aria-label="Fechar carrinho">&times;</button>
+      <h2 id="cart-title" class="text-2xl font-bold mb-4">Seu Carrinho</h2>
+      <ul id="cart-items" class="mb-4 max-h-64 overflow-auto"></ul>
 
-  <!-- Carrinho -->
-  <section id="carrinho" aria-label="Carrinho de compras" hidden>
-    <h2>Seu Carrinho</h2>
-    <ul id="itens-carrinho"></ul>
-    <div id="carrinho-total">Total: R$ 0,00</div>
-  </section>
+      <!-- Total -->
+      <div class="text-right font-bold text-lg mb-4">Total: R$ <span id="cart-total">0,00</span></div>
 
   <script>
     const produtos = [
       { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
       { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
       { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
-      { nome: "Mesa Lateral", preco: 1308.00, imagem: "https://i.pinimg.com/736x/c1/8f/ba/c18fba0325a52e7605cb8a8f00733cfb.jpg" }
+      { nome: "Mesa Lateral", preco: 1308.00, imagem: "https://i.pinimg.com/736x/0b/2f/2f/0b2f2ff20f2058d5db6c1723aec5bcb4.jpg" },
+      { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
+      { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg" },
+      { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
+      { nome: "Kit de Nicho", preco: 300.00, imagem: "https://i.pinimg.com/736x/60/6b/f9/606bf992e0fa58769005d43ac482a75e.jpg" },
+      { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" },
+      { nome: "Espelho ondulado", preco: 284.90, imagem: "https://i.pinimg.com/736x/69/b9/d2/69b9d2a3567d8610f465e69e5f726d80.jpg" }
     ];
 
-    const listaProdutos = document.getElementById("lista-produtos");
-    const carrinho = [];
-    const itensCarrinho = document.getElementById("itens-carrinho");
-    const carrinhoTotal = document.getElementById("carrinho-total");
+    // Função para criar o HTML dos produtos
+    function mostrarProdutos() {
+      const lista = document.getElementById('lista-produtos');
+      lista.innerHTML = ''; // limpa
 
-    // Função para mostrar os produtos na tela
-    function renderizarProdutos() {
-      listaProdutos.innerHTML = "";
       produtos.forEach(produto => {
-        const div = document.createElement('div');
-        div.classList.add('produto-card');
-        div.innerHTML = `
-          <img src="${produto.imagem}" alt="${produto.nome}" />
+        // Se a imagem não for URL completa, prefixe o caminho (ajuste conforme seu diretório)
+        const imagemSrc = produto.imagem.startsWith('http') ? produto.imagem : `./imagens/${produto.imagem}`;
+
+        const card = document.createElement('div');
+        card.className = 'produto-card';
+        card.tabIndex = 0;
+        card.innerHTML = `
+          <img src="${imagemSrc}" alt="${produto.nome}" />
           <div class="produto-nome">${produto.nome}</div>
           <div class="produto-preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</div>
-          <button class="add-to-cart" data-produto="${produto.nome}" data-preco="${produto.preco}">Adicionar ao Carrinho</button>
+          <button class="add-to-cart mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" 
+            data-produto="${produto.nome}" data-preco="${produto.preco}" aria-label="Adicionar ${produto.nome} ao carrinho">
+            Adicionar ao carrinho
+          </button>
         `;
-        listaProdutos.appendChild(div);
+        lista.appendChild(card);
+      });
+
+      // Ativa os eventos dos botões de adicionar ao carrinho
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const nome = btn.dataset.produto;
+          const preco = Number(btn.dataset.preco);
+          adicionarProduto(nome, preco);
+          alert(`${nome} adicionado ao carrinho!`);
+        });
       });
     }
 
-    // Adicionar ao carrinho
-    listaProdutos.addEventListener("click", (e) => {
-      if (e.target.classList.contains("add-to-cart")) {
-        const produtoNome = e.target.dataset.produto;
-        const produtoPreco = parseFloat(e.target.dataset.preco);
-        const produtoExistente = carrinho.find(item => item.nome === produtoNome);
+    // Resto do código do carrinho e modal igual ao que mandei antes
+    const carrinho = [];
 
-        if (produtoExistente) {
-          produtoExistente.quantidade++;
-        } else {
-          carrinho.push({ nome: produtoNome, preco: produtoPreco, quantidade: 1 });
-        }
+    function atualizarContador() {
+      const count = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+      const countSpan = document.getElementById('cart-count');
+      countSpan.textContent = count;
+      countSpan.style.display = count === 0 ? 'none' : 'inline-block';
+    }
 
-        atualizarCarrinho();
+    function atualizarModal() {
+      const lista = document.getElementById('cart-items');
+      lista.innerHTML = '';
+      if (carrinho.length === 0) {
+        lista.innerHTML = '<li class="text-gray-600">Seu carrinho está vazio.</li>';
+        document.getElementById('cart-total').textContent = '0,00';
+        return;
+      }
+
+      carrinho.forEach((item, i) => {
+        const li = document.createElement('li');
+        li.className = 'border-b py-2 flex justify-between items-center space-x-2';
+
+        li.innerHTML = `
+          <div class="flex-1">
+            <strong>${item.nome}</strong><br />
+            R$ ${item.preco.toFixed(2).replace('.', ',')} x 
+            <input type="number" min="1" value="${item.quantidade}" data-index="${i}" class="quantidade-input" aria-label="Quantidade de ${item.nome}" />
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="font-semibold">R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
+            <button data-index="${i}" class="remover-item" aria-label="Remover ${item.nome} do carrinho">&times;</button>
+          </div>
+        `;
+        lista.appendChild(li);
+      });
+
+      const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+      document.getElementById('cart-total').textContent = total.toFixed(2).replace('.', ',');
+
+      document.querySelectorAll('.remover-item').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const idx = Number(e.target.dataset.index);
+          carrinho.splice(idx, 1);
+          atualizarContador();
+          atualizarModal();
+        });
+      });
+
+      document.querySelectorAll('.quantidade-input').forEach(input => {
+        input.addEventListener('change', e => {
+          const idx = Number(e.target.dataset.index);
+          let val = parseInt(e.target.value);
+          if (isNaN(val) || val < 1) {
+            val = 1;
+            e.target.value = 1;
+          }
+          carrinho[idx].quantidade = val;
+          atualizarContador();
+          atualizarModal();
+        });
+      });
+    }
+
+    function adicionarProduto(nome, preco) {
+      const idx = carrinho.findIndex(p => p.nome === nome);
+      if (idx >= 0) {
+        carrinho[idx].quantidade++;
+      } else {
+        carrinho.push({ nome, preco, quantidade: 1 });
+      }
+      atualizarContador();
+      atualizarModal();
+      cartModal.classList.add('visible');
+    }
+
+    const cartButton = document.getElementById('cart-button');
+    const cartModal = document.getElementById('cart-modal');
+    const closeCartBtn = document.getElementById('close-cart');
+
+    cartButton.addEventListener('click', () => {
+      atualizarModal();
+      cartModal.classList.add('visible');
+    });
+
+    closeCartBtn.addEventListener('click', () => {
+      cartModal.classList.remove('visible');
+    });
+
+    cartModal.addEventListener('click', e => {
+      if (e.target === cartModal) {
+        cartModal.classList.remove('visible');
       }
     });
 
-    // Atualizar o carrinho
-    function atualizarCarrinho() {
-      itensCarrinho.innerHTML = "";
-      let total = 0;
-      carrinho.forEach(item => {
-        total += item.preco * item.quantidade;
-        const li = document.createElement("li");
-        li.innerHTML = `${item.nome} - R$ ${item.preco.toFixed(2)} x ${item.quantidade}
-        <span class="acoes">
-          <button class="btn-ajustar-quantidade" onclick="ajustarQuantidade('${item.nome}', 1)">+</button>
-          <button class="btn-ajustar-quantidade" onclick="ajustarQuantidade('${item.nome}', -1)">-</button>
-          <button class="btn-remover" onclick="removerItem('${item.nome}')">Remover</button>
-        </span>`;
-        itensCarrinho.appendChild(li);
-      });
+    const checkoutForm = document.getElementById('checkout-form');
+    checkoutForm.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-      carrinhoTotal.textContent = `Total: R$ ${total.toFixed(2)}`;
-      if (carrinho.length > 0) {
-        document.getElementById("carrinho").hidden = false;
+      if (carrinho.length === 0) {
+        alert('Seu carrinho está vazio.');
+        return;
       }
-    }
 
-    // Ajustar quantidade de um item
-    function ajustarQuantidade(nome, quantidade) {
-      const item = carrinho.find(item => item.nome === nome);
-      if (item) {
-        item.quantidade += quantidade;
-        if (item.quantidade <= 0) {
-          carrinho.splice(carrinho.indexOf(item), 1);
-        }
-        atualizarCarrinho();
+      const nome = checkoutForm.nome.value.trim();
+      const email = checkoutForm.email.value.trim();
+      const endereco = checkoutForm.endereco.value.trim();
+
+      if (!nome || !email || !endereco) {
+        alert('Por favor, preencha todos os campos do formulário.');
+        return;
       }
-    }
 
-    // Remover item do carrinho
-    function removerItem(nome) {
-      const item = carrinho.find(item => item.nome === nome);
-      if (item) {
-        carrinho.splice(carrinho.indexOf(item), 1);
-        atualizarCarrinho();
-      }
-    }
+      alert(`Obrigado pela compra, ${nome}!\nTotal: R$ ${document.getElementById('cart-total').textContent}`);
 
-    // Exibir produtos ao carregar a página
-    renderizarProdutos();
+      carrinho.length = 0;
+      atualizarContador();
+      atualizarModal();
+      checkoutForm.reset();
+      cartModal.classList.remove('visible');
+    });
+
+    atualizarContador();
+
+    // Executa a criação da lista de produtos na página
+    mostrarProdutos();
   </script>
+
 </body>
 </html>
