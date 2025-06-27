@@ -48,3 +48,35 @@ button i {
   text-align: center;
   font-weight: bold;
 }
+
+.acoes {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-ajustar-quantidade {
+  background-color: #f3f4f6;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.btn-ajustar-quantidade:hover {
+  background-color: #d1d5db;
+}
+
+.btn-remover {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.btn-remover:hover {
+  background-color: #f5c6cb;
+}

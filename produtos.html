@@ -174,6 +174,35 @@
       border-top: 1px solid #333;
       padding-top: 10px;
     }
+
+    /* Botões de ação no carrinho */
+    .acoes {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn-ajustar-quantidade {
+      background-color: #f3f4f6;
+      border: 1px solid #ddd;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .btn-ajustar-quantidade:hover {
+      background-color: #d1d5db;
+    }
+    .btn-remover {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .btn-remover:hover {
+      background-color: #f5c6cb;
+    }
   </style>
 </head>
 <body>
@@ -220,29 +249,46 @@
       { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
       { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
       { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
-      { nome: "Mesa Lateral", preco: 1308.00, imagem: "https://i.pinimg.com/736x/0b/2f/2f/0b2f2ff20f2058d5db6c1723aec5bcb4.jpg" },
-      { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
-      { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg" },
-      { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
-      { nome: "Estante Arara de Ferro", preco: 800.00, imagem: "https://i.pinimg.com/736x/c7/84/ea/c784eaf9a6c7273f7fe6604a7f9687b9.jpg" }
+      { nome: "Mesa Lateral", preco: 1308.00, imagem: "1fb255fa2dca50c59765d433f0768c85.jpg" },
+      { nome: "Sofá Confortável", preco: 859.99, imagem: "3f6fe2ff99e40770e7246899b0e35871.jpg" }
     ];
 
-    const input = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
-    const resultsList = document.getElementById('resultsList');
-    const listaProdutos = document.getElementById('lista-produtos');
-    const carrinhoSection = document.getElementById('carrinho');
-    const itensCarrinhoList = document.getElementById('itens-carrinho');
-    const carrinhoTotal = document.getElementById('carrinho-total');
-    
-    let carrinho = {}; // Usando objeto para armazenar produtos no carrinho
+    const carrinho = {};
+    const listaProdutos = document.getElementById("lista-produtos");
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const itensCarrinhoList = document.getElementById("itens-carrinho");
+    const carrinhoTotal = document.getElementById("carrinho-total");
+    const carrinhoSection = document.getElementById("carrinho");
 
-    // Função para formatar o preço
-    function formatPrice(price) {
-      return `R$ ${price.toFixed(2).replace('.', ',')}`;
+    // Exibe a lista de produtos
+    function exibirProdutos(produtos) {
+      listaProdutos.innerHTML = "";
+      produtos.forEach((produto) => {
+        const divProduto = document.createElement("div");
+        divProduto.classList.add("produto-card");
+        divProduto.innerHTML = `
+          <img src="imagens/${produto.imagem}" alt="${produto.nome}" />
+          <div class="produto-nome">${produto.nome}</div>
+          <div class="produto-preco">R$ ${produto.preco.toFixed(2)}</div>
+          <button onclick="adicionarAoCarrinho('${produto.nome}')">Adicionar ao Carrinho</button>
+        `;
+        listaProdutos.appendChild(divProduto);
+      });
     }
 
-    // Atualiza o carrinho
+    // Função para adicionar ao carrinho
+    function adicionarAoCarrinho(nome) {
+      const produto = produtos.find((p) => p.nome === nome);
+      if (carrinho[nome]) {
+        carrinho[nome].quantidade += 1;
+      } else {
+        carrinho[nome] = { produto, quantidade: 1 };
+      }
+      atualizarCarrinho();
+    }
+
+    // Função para atualizar o carrinho
     function atualizarCarrinho() {
       const itens = Object.values(carrinho);
       if (itens.length === 0) {
@@ -250,101 +296,53 @@
         return;
       }
       carrinhoSection.hidden = false;
-      itensCarrinhoList.innerHTML = '';
+      itensCarrinhoList.innerHTML = "";
 
       let total = 0;
 
       itens.forEach(({ produto, quantidade }) => {
-        const li = document.createElement('li');
+        const li = document.createElement("li");
         li.innerHTML = `
           <span>${produto.nome}</span>
           <span class="quantidade">x${quantidade}</span>
-          <span>${formatPrice(produto.preco * quantidade)}</span>
+          <span>R$ ${formatPrice(produto.preco * quantidade)}</span>
+          <div class="acoes">
+            <button class="btn-ajustar-quantidade" onclick="ajustarQuantidade('${produto.nome}', -1)">-</button>
+            <button class="btn-ajustar-quantidade" onclick="ajustarQuantidade('${produto.nome}', 1)">+</button>
+            <button class="btn-remover" onclick="removerProduto('${produto.nome}')">🗑️</button>
+          </div>
         `;
         itensCarrinhoList.appendChild(li);
         total += produto.preco * quantidade;
       });
 
-      carrinhoTotal.textContent = `Total: ${formatPrice(total)}`;
+      carrinhoTotal.textContent = `Total: R$ ${formatPrice(total)}`;
     }
 
-    // Função para adicionar produto ao carrinho
-    function adicionarProduto(nome, preco) {
+    // Função para ajustar a quantidade
+    function ajustarQuantidade(nome, ajuste) {
       if (carrinho[nome]) {
-        carrinho[nome].quantidade++;
-      } else {
-        carrinho[nome] = { produto: { nome, preco }, quantidade: 1 };
+        carrinho[nome].quantidade += ajuste;
+        if (carrinho[nome].quantidade <= 0) {
+          delete carrinho[nome];
+        }
+        atualizarCarrinho();
       }
+    }
+
+    // Função para remover um produto
+    function removerProduto(nome) {
+      delete carrinho[nome];
       atualizarCarrinho();
     }
 
-    // Adicionar produtos à lista de resultados
-    function performSearch() {
-      const query = input.value.trim().toLowerCase();
-
-      if (query === '') {
-        resultsList.innerHTML = '<p>Por favor, digite algo para pesquisar.</p>';
-        return;
-      }
-
-      const filtered = produtos.filter(produto => produto.nome.toLowerCase().includes(query));
-
-      if (filtered.length === 0) {
-        resultsList.innerHTML = `<p>Nenhum produto encontrado para "<strong>${query}</strong>".</p>`;
-        return;
-      }
-
-      const listHTML = '<ul>' + filtered.map(produto => `
-        <li tabindex="0" role="button" aria-pressed="false" aria-label="Adicionar ${produto.nome} ao carrinho">
-          <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/60x60?text=Sem+Imagem'" />
-          <div class="product-info">
-            <span class="product-name">${produto.nome}</span>
-            <span class="product-price">${formatPrice(produto.preco)}</span>
-          </div>
-        </li>
-      `).join('') + '</ul>';
-
-      resultsList.innerHTML = listHTML;
-
-      const items = resultsList.querySelectorAll('li');
-      items.forEach((item, i) => {
-        item.addEventListener('click', () => {
-          adicionarProduto(filtered[i].nome, filtered[i].preco);
-        });
-        item.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            adicionarProduto(filtered[i].nome, filtered[i].preco);
-          }
-        });
-      });
+    // Formatar preço
+    function formatPrice(valor) {
+      return valor.toFixed(2).replace(".", ",");
     }
 
-    // Adiciona produtos na lista inicial
-    function renderProdutos() {
-      const listaHTML = produtos.map(produto => `
-        <div class="produto-card" tabindex="0" role="button" aria-label="Adicionar ${produto.nome} ao carrinho">
-          <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/200x200?text=Sem+Imagem'" />
-          <div class="produto-nome">${produto.nome}</div>
-          <div class="produto-preco">${formatPrice(produto.preco)}</div>
-        </div>
-      `).join('');
-      listaProdutos.innerHTML = listaHTML;
-
-      const produtoCards = listaProdutos.querySelectorAll('.produto-card');
-      produtoCards.forEach((card, i) => {
-        card.addEventListener('click', () => {
-          adicionarProduto(produtos[i].nome, produtos[i].preco);
-        });
-      });
-    }
-
-    // Inicialização
-    searchBtn.addEventListener('click', performSearch);
-    input.addEventListener('input', performSearch);
-
-    renderProdutos();
+    // Exibe produtos ao carregar a página
+    exibirProdutos(produtos);
   </script>
-
 </body>
 </html>
