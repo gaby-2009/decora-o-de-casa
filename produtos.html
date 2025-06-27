@@ -249,105 +249,92 @@
       { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
       { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
       { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
-      { nome: "Mesa Lateral", preco: 1308.00, imagem: "https://i.pinimg.com/736x/0b/2f/2f/0b2f2ff20f2058d5db6c1723aec5bcb4.jpg" },
-      { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
-      { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/a2/48/6d/a2486d4204b2effa55bd305e4f934894.jpg" },
-      { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
-      { nome: "Kit de Nicho", preco: 300.00, imagem: "https://i.pinimg.com/736x/60/6b/f9/606bf992e0fa58769005d43ac482a75e.jpg" },
-      { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" },
-      { nome: "Espelho ondulado", preco: 284.90, imagem: "https://i.pinimg.com/736x/69/b9/d2/69b9d2a3567d8610f465e69e5f726d80.jpg" }
+      { nome: "Mesa Lateral", preco: 1308.00, imagem: "https://i.pinimg.com/736x/c1/8f/ba/c18fba0325a52e7605cb8a8f00733cfb.jpg" }
     ];
 
-    const carrinho = {};
     const listaProdutos = document.getElementById("lista-produtos");
-    const searchInput = document.getElementById("searchInput");
-    const searchBtn = document.getElementById("searchBtn");
-    const itensCarrinhoList = document.getElementById("itens-carrinho");
+    const carrinho = [];
+    const itensCarrinho = document.getElementById("itens-carrinho");
     const carrinhoTotal = document.getElementById("carrinho-total");
-    const carrinhoSection = document.getElementById("carrinho");
 
-    // Exibe a lista de produtos
-    function exibirProdutos(produtos) {
+    // Função para mostrar os produtos na tela
+    function renderizarProdutos() {
       listaProdutos.innerHTML = "";
-      produtos.forEach((produto) => {
-        const divProduto = document.createElement("div");
-        divProduto.classList.add("produto-card");
-        divProduto.innerHTML = `
-          <img src="imagens/${produto.imagem}" alt="${produto.nome}" />
+      produtos.forEach(produto => {
+        const div = document.createElement('div');
+        div.classList.add('produto-card');
+        div.innerHTML = `
+          <img src="${produto.imagem}" alt="${produto.nome}" />
           <div class="produto-nome">${produto.nome}</div>
-          <div class="produto-preco">R$ ${produto.preco.toFixed(2)}</div>
-          <button onclick="adicionarAoCarrinho('${produto.nome}')">Adicionar ao Carrinho</button>
+          <div class="produto-preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</div>
+          <button class="add-to-cart" data-produto="${produto.nome}" data-preco="${produto.preco}">Adicionar ao Carrinho</button>
         `;
-        listaProdutos.appendChild(divProduto);
+        listaProdutos.appendChild(div);
       });
     }
 
-    // Função para adicionar ao carrinho
-    function adicionarAoCarrinho(nome) {
-      const produto = produtos.find((p) => p.nome === nome);
-      if (carrinho[nome]) {
-        carrinho[nome].quantidade += 1;
-      } else {
-        carrinho[nome] = { produto, quantidade: 1 };
-      }
-      atualizarCarrinho();
-    }
+    // Adicionar ao carrinho
+    listaProdutos.addEventListener("click", (e) => {
+      if (e.target.classList.contains("add-to-cart")) {
+        const produtoNome = e.target.dataset.produto;
+        const produtoPreco = parseFloat(e.target.dataset.preco);
+        const produtoExistente = carrinho.find(item => item.nome === produtoNome);
 
-    // Função para atualizar o carrinho
+        if (produtoExistente) {
+          produtoExistente.quantidade++;
+        } else {
+          carrinho.push({ nome: produtoNome, preco: produtoPreco, quantidade: 1 });
+        }
+
+        atualizarCarrinho();
+      }
+    });
+
+    // Atualizar o carrinho
     function atualizarCarrinho() {
-      const itens = Object.values(carrinho);
-      if (itens.length === 0) {
-        carrinhoSection.hidden = true;
-        return;
-      }
-      carrinhoSection.hidden = false;
-      itensCarrinhoList.innerHTML = "";
-
+      itensCarrinho.innerHTML = "";
       let total = 0;
-
-      itens.forEach(({ produto, quantidade }) => {
+      carrinho.forEach(item => {
+        total += item.preco * item.quantidade;
         const li = document.createElement("li");
-        li.innerHTML = `
-          <span>${produto.nome}</span>
-          <span class="quantidade">x${quantidade}</span>
-          <span>R$ ${formatPrice(produto.preco * quantidade)}</span>
-          <div class="acoes">
-            <button class="btn-ajustar-quantidade" onclick="ajustarQuantidade('${produto.nome}', -1)">-</button>
-            <button class="btn-ajustar-quantidade" onclick="ajustarQuantidade('${produto.nome}', 1)">+</button>
-            <button class="btn-remover" onclick="removerProduto('${produto.nome}')">🗑️</button>
-          </div>
-        `;
-        itensCarrinhoList.appendChild(li);
-        total += produto.preco * quantidade;
+        li.innerHTML = `${item.nome} - R$ ${item.preco.toFixed(2)} x ${item.quantidade}
+        <span class="acoes">
+          <button class="btn-ajustar-quantidade" onclick="ajustarQuantidade('${item.nome}', 1)">+</button>
+          <button class="btn-ajustar-quantidade" onclick="ajustarQuantidade('${item.nome}', -1)">-</button>
+          <button class="btn-remover" onclick="removerItem('${item.nome}')">Remover</button>
+        </span>`;
+        itensCarrinho.appendChild(li);
       });
 
-      carrinhoTotal.textContent = `Total: R$ ${formatPrice(total)}`;
+      carrinhoTotal.textContent = `Total: R$ ${total.toFixed(2)}`;
+      if (carrinho.length > 0) {
+        document.getElementById("carrinho").hidden = false;
+      }
     }
 
-    // Função para ajustar a quantidade
-    function ajustarQuantidade(nome, ajuste) {
-      if (carrinho[nome]) {
-        carrinho[nome].quantidade += ajuste;
-        if (carrinho[nome].quantidade <= 0) {
-          delete carrinho[nome];
+    // Ajustar quantidade de um item
+    function ajustarQuantidade(nome, quantidade) {
+      const item = carrinho.find(item => item.nome === nome);
+      if (item) {
+        item.quantidade += quantidade;
+        if (item.quantidade <= 0) {
+          carrinho.splice(carrinho.indexOf(item), 1);
         }
         atualizarCarrinho();
       }
     }
 
-    // Função para remover um produto
-    function removerProduto(nome) {
-      delete carrinho[nome];
-      atualizarCarrinho();
+    // Remover item do carrinho
+    function removerItem(nome) {
+      const item = carrinho.find(item => item.nome === nome);
+      if (item) {
+        carrinho.splice(carrinho.indexOf(item), 1);
+        atualizarCarrinho();
+      }
     }
 
-    // Formatar preço
-    function formatPrice(valor) {
-      return valor.toFixed(2).replace(".", ",");
-    }
-
-    // Exibe produtos ao carregar a página
-    exibirProdutos(produtos);
+    // Exibir produtos ao carregar a página
+    renderizarProdutos();
   </script>
 </body>
 </html>
