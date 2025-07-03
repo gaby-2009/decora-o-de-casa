@@ -286,7 +286,7 @@
 </head>
 <body>
 
- <!-- Cabeçalho e navegação -->
+  <!-- Cabeçalho e navegação -->
   <header class="bg-white shadow-sm py-4 mb-6">
     <div class="container mx-auto px-4 flex justify-between items-center flex-wrap">
       <a href="#" class="text-3xl font-bold text-gray-800 tracking-tight" aria-label="Minha Casa Decor - Home">Minha Casa Decor</a>
@@ -319,7 +319,10 @@
     <ul id="search-results"></ul>
   </div>
 
- <!-- Modal do Carrinho -->
+  <!-- Lista de produtos (cards) -->
+  <div id="lista-produtos"></div>
+
+  <!-- Modal do Carrinho -->
   <div id="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-describedby="cart-description">
     <div>
       <button id="close-cart" aria-label="Fechar carrinho">&times;</button>
@@ -329,182 +332,348 @@
       <!-- Total -->
       <div class="text-right font-bold text-lg mb-4">Total: R$ <span id="cart-total">0,00</span></div>
 
-  <script>
-    const produtos = [
-      { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
-      { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
-      { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
-      { nome: "Mesa Lateral", preco: 1308.00, imagem: "" },
-      { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
-      { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/89/19/8f/89198f377db9112b728cfdc8646cb2a5.jpg" },
-      { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
-      { nome: "Kit de Nicho", preco: 300.00, imagem: "" },
-      { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" },
-      { nome: "Espelho ondulado", preco: 284.90, imagem: "https://i.pinimg.com/736x/69/b9/d2/69b9d2a3567d8610f465e69e5f726d80.jpg" }
-    ];
+      <!-- Formulário de checkout -->
+      <form id="checkout-form" aria-label="Formulário de checkout">
+        <label for="nome">Nome Completo</label>
+        <input type="text" id="nome" name="nome" required />
 
-    // Função para criar o HTML dos produtos
-    function mostrarProdutos() {
-      const lista = document.getElementById('lista-produtos');
-      lista.innerHTML = ''; // limpa
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" required />
 
-      produtos.forEach(produto => {
-        // Se a imagem não for URL completa, prefixe o caminho (ajuste conforme seu diretório)
-        const imagemSrc = produto.imagem.startsWith('http') ? produto.imagem : `./imagens/${produto.imagem}`;
+        <label for="endereco">Endereço</label>
+        <textarea id="endereco" name="endereco" rows="3" required></textarea>
 
-        const card = document.createElement('div');
-        card.className = 'produto-card';
-        card.tabIndex = 0;
-        card.innerHTML = `
-          <img src="${imagemSrc}" alt="${produto.nome}" />
-          <div class="produto-nome">${produto.nome}</div>
-          <div class="produto-preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</div>
-          <button class="add-to-cart mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" 
-            data-produto="${produto.nome}" data-preco="${produto.preco}" aria-label="Adicionar ${produto.nome} ao carrinho">
-            Adicionar ao carrinho
-          </button>
-        `;
-        lista.appendChild(card);
-      });
+        <button type="submit">Finalizar Compra</button>
+      </form>
+    </div>
+  </div>
 
-      // Ativa os eventos dos botões de adicionar ao carrinho
-      document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const nome = btn.dataset.produto;
-          const preco = Number(btn.dataset.preco);
-          adicionarProduto(nome, preco);
-          alert(`${nome} adicionado ao carrinho!`);
-        });
-      });
-    }
+<script>
+  const produtos = [
+    { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
+    { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
+    { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
+    { nome: "Mesa Lateral", preco: 1308.00, imagem: "" },
+    { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
+    { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/89/19/8f/89198f377db9112b728cfdc8646cb2a5.jpg" },
+    { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
+    { nome: "Kit de Nicho", preco: 300.00, imagem: "" },
+    { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" },
+    { nome: "Espelho ondulado", preco: 284.90, imagem: "https://i.pinimg.com/736x/69/b9/d2/69b9d2a3567d8610f465e69e5f726d80.jpg" }
+  ];
 
-    // Resto do código do carrinho e modal igual ao que mandei antes
-    const carrinho = [];
+  // Função para mostrar produtos
+  function mostrarProdutos() {
+    const lista = document.getElementById('lista-produtos');
+    lista.innerHTML = '';
 
-    function atualizarContador() {
-      const count = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
-      const countSpan = document.getElementById('cart-count');
-      countSpan.textContent = count;
-      countSpan.style.display = count === 0 ? 'none' : 'inline-block';
-    }
+    produtos.forEach(produto => {
+      const imagemSrc = produto.imagem
+        ? (produto.imagem.startsWith('http') 
+            ? produto.imagem 
+            : `./imagens/${produto.imagem}`)
+        : 'https://via.placeholder.com/250x180?text=Sem+Imagem';
 
-    function atualizarModal() {
-      const lista = document.getElementById('cart-items');
-      lista.innerHTML = '';
-      if (carrinho.length === 0) {
-        lista.innerHTML = '<li class="text-gray-600">Seu carrinho está vazio.</li>';
-        document.getElementById('cart-total').textContent = '0,00';
-        return;
-      }
-
-      carrinho.forEach((item, i) => {
-        const li = document.createElement('li');
-        li.className = 'border-b py-2 flex justify-between items-center space-x-2';
-
-        li.innerHTML = `
-          <div class="flex-1">
-            <strong>${item.nome}</strong><br />
-            R$ ${item.preco.toFixed(2).replace('.', ',')} x 
-            <input type="number" min="1" value="${item.quantidade}" data-index="${i}" class="quantidade-input" aria-label="Quantidade de ${item.nome}" />
-          </div>
-          <div class="flex items-center space-x-2">
-            <span class="font-semibold">R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
-            <button data-index="${i}" class="remover-item" aria-label="Remover ${item.nome} do carrinho">&times;</button>
-          </div>
-        `;
-        lista.appendChild(li);
-      });
-
-      const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
-      document.getElementById('cart-total').textContent = total.toFixed(2).replace('.', ',');
-
-      document.querySelectorAll('.remover-item').forEach(btn => {
-        btn.addEventListener('click', e => {
-          const idx = Number(e.target.dataset.index);
-          carrinho.splice(idx, 1);
-          atualizarContador();
-          atualizarModal();
-        });
-      });
-
-      document.querySelectorAll('.quantidade-input').forEach(input => {
-        input.addEventListener('change', e => {
-          const idx = Number(e.target.dataset.index);
-          let val = parseInt(e.target.value);
-          if (isNaN(val) || val < 1) {
-            val = 1;
-            e.target.value = 1;
-          }
-          carrinho[idx].quantidade = val;
-          atualizarContador();
-          atualizarModal();
-        });
-      });
-    }
-
-    function adicionarProduto(nome, preco) {
-      const idx = carrinho.findIndex(p => p.nome === nome);
-      if (idx >= 0) {
-        carrinho[idx].quantidade++;
-      } else {
-        carrinho.push({ nome, preco, quantidade: 1 });
-      }
-      atualizarContador();
-      atualizarModal();
-      cartModal.classList.add('visible');
-    }
-
-    const cartButton = document.getElementById('cart-button');
-    const cartModal = document.getElementById('cart-modal');
-    const closeCartBtn = document.getElementById('close-cart');
-
-    cartButton.addEventListener('click', () => {
-      atualizarModal();
-      cartModal.classList.add('visible');
+      const card = document.createElement('div');
+      card.className = 'produto-card';
+      card.tabIndex = 0;
+      card.innerHTML = `
+        <img src="${imagemSrc}" alt="${produto.nome}" />
+        <div class="produto-nome">${produto.nome}</div>
+        <div class="produto-preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</div>
+        <button class="add-to-cart mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" 
+          data-produto="${produto.nome}" data-preco="${produto.preco}" aria-label="Adicionar ${produto.nome} ao carrinho">
+          Adicionar ao carrinho
+        </button>
+      `;
+      lista.appendChild(card);
     });
 
-    closeCartBtn.addEventListener('click', () => {
-      cartModal.classList.remove('visible');
+    // Eventos para adicionar ao carrinho
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nome = btn.dataset.produto;
+        const preco = Number(btn.dataset.preco);
+        adicionarProduto(nome, preco);
+        alert(`${nome} adicionado ao carrinho!`);
+      });
+    });
+  }
+
+  // Carrinho
+  const carrinho = [];
+
+  function atualizarContador() {
+    const count = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+    const countSpan = document.getElementById('cart-count');
+    countSpan.textContent = count;
+    countSpan.style.display = count === 0 ? 'none' : 'inline-block';
+  }
+
+  function atualizarModal() {
+    const lista = document.getElementById('cart-items');
+    lista.innerHTML = '';
+    if (carrinho.length === 0) {
+      lista.innerHTML = '<li class="text-gray-600">Seu carrinho está vazio.</li>';
+      document.getElementById('cart-total').textContent = '0,00';
+      return;
+    }
+
+    carrinho.forEach((item, i) => {
+      const li = document.createElement('li');
+      li.className = 'border-b py-2 flex justify-between items-center space-x-2';
+
+      li.innerHTML = `
+        <div class="flex-1">
+          <strong>${item.nome}</strong><br />
+          R$ ${item.preco.toFixed(2).replace('.', ',')} x 
+          <input type="number" min="1" value="${item.quantidade}" data-index="${i}" class="quantidade-input" aria-label="Quantidade de ${item.nome}" />
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="font-semibold">R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
+          <button data-index="${i}" class="remover-item" aria-label="Remover ${item.nome} do carrinho">&times;</button>
+        </div>
+      `;
+      lista.appendChild(li);
     });
 
-    cartModal.addEventListener('click', e => {
-      if (e.target === cartModal) {
-        cartModal.classList.remove('visible');
-      }
+    const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+    document.getElementById('cart-total').textContent = total.toFixed(2).replace('.', ',');
+
+    // Remover item
+    document.querySelectorAll('.remover-item').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const idx = Number(e.target.dataset.index);
+        carrinho.splice(idx, 1);
+        atualizarContador();
+        atualizarModal();
+      });
     });
 
-    const checkoutForm = document.getElementById('checkout-form');
-    checkoutForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      if (carrinho.length === 0) {
-        alert('Seu carrinho está vazio.');
-        return;
-      }
-
-      const nome = checkoutForm.nome.value.trim();
-      const email = checkoutForm.email.value.trim();
-      const endereco = checkoutForm.endereco.value.trim();
-
-      if (!nome || !email || !endereco) {
-        alert('Por favor, preencha todos os campos do formulário.');
-        return;
-      }
-
-      alert(`Obrigado pela compra, ${nome}!\nTotal: R$ ${document.getElementById('cart-total').textContent}`);
-
-      carrinho.length = 0;
-      atualizarContador();
-      atualizarModal();
-      checkoutForm.reset();
-      cartModal.classList.remove('visible');
+    // Alterar quantidade
+    document.querySelectorAll('.quantidade-input').forEach(input => {
+      input.addEventListener('change', e => {
+        const idx = Number(e.target.dataset.index);
+        let val = parseInt(e.target.value);
+        if (isNaN(val) || val < 1) {
+          val = 1;
+          e.target.value = 1;
+        }
+        carrinho[idx].quantidade = val;
+        atualizarContador();
+        atualizarModal();
+      });
     });
+  }
 
+  function adicionarProduto(nome, preco) {
+    const idx = carrinho.findIndex(p => p.nome === nome);
+    if (idx >= 0) {
+      carrinho[idx].quantidade++;
+    } else {
+      carrinho.push({ nome, preco, quantidade: 1 });
+    }
     atualizarContador();
+    atualizarModal();
+    cartModal.classList.add('visible');
+  }
 
-    // Executa a criação da lista de produtos na página
-    mostrarProdutos();
-  </script>
+  const cartButton = document.getElementById('cart-button');
+  const cartModal = document.getElementById('cart-modal');
+  const closeCartBtn = document.getElementById('close-cart');
+  const checkoutForm = document.getElementById('checkout-form');
 
+  cartButton.addEventListener('click', () => {
+    atualizarModal();
+    cartModal.classList.add('visible');
+  });
+
+  closeCartBtn.addEventListener('click', () => {
+    cartModal.classList.remove('visible');
+  });
+
+  checkoutForm.addEventListener('submit', e => {
+    e.preventDefault();
+    if (carrinho.length === 0) {
+      alert('Seu carrinho está vazio.');
+      return;
+    }
+    alert('Compra finalizada! Obrigado pelo pedido.');
+    carrinho.length = 0; // limpa o carrinho
+    atualizarContador();
+    atualizarModal();
+    cartModal.classList.remove('visible');
+    checkoutForm.reset();
+  });
+
+  // Pesquisa (busca por nome)
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+
+  function buscarProdutos() {
+    const termo = searchInput.value.trim().toLowerCase();
+    searchResults.innerHTML = '';
+
+    if (!termo) return;
+
+    const resultados = produtos.filter(p => p.nome.toLowerCase().includes(termo));
+
+    if (resultados.length === 0) {
+      searchResults.innerHTML = '<li>Nenhum produto encontrado.</li>';
+      return;
+    }
+
+    resultados.forEach(p => {
+      const li = document.createElement('li');
+      li.textContent = `${p.nome} - R$ ${p.preco.toFixed(2).replace('.', ',')}`;
+      searchResults.appendChild(li);
+    });
+  }
+
+  document.getElementById('search-button').addEventListener('click', buscarProdutos);
+  searchInput.addEventListener('input', buscarProdutos);
+
+  // Inicializa a lista
+  mostrarProdutos();
+  atualizarContador();
+</script>
+
+<style>
+  /* Estilo simples para o card dos produtos */
+  #lista-produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 1rem;
+    padding: 0 1rem 2rem;
+  }
+  .produto-card {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 8px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+    transition: box-shadow 0.2s ease;
+  }
+  .produto-card:hover, .produto-card:focus {
+    box-shadow: 0 4px 6px rgb(0 0 0 / 0.15);
+    outline: none;
+  }
+  .produto-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  .produto-nome {
+    margin-top: 0.75rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  .produto-preco {
+    margin-top: 0.5rem;
+    font-weight: 700;
+    color: #1e40af;
+  }
+
+  /* Modal */
+  #cart-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    z-index: 9999;
+  }
+  #cart-modal.visible {
+    display: flex;
+  }
+  #cart-modal > div {
+    background: white;
+    max-width: 400px;
+    width: 100%;
+    border-radius: 8px;
+    padding: 1rem 1.5rem 1.5rem;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  #close-cart {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+  }
+  #cart-items {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+  }
+  #cart-items li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+  }
+  .quantidade-input {
+    width: 50px;
+    padding: 0.2rem;
+    margin-left: 0.5rem;
+  }
+  form label {
+    display: block;
+    margin-top: 0.75rem;
+  }
+  form input, form textarea, form button {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    font-size: 1rem;
+  }
+  form button {
+    background-color: #1e40af;
+    color: white;
+    font-weight: 700;
+    margin-top: 1rem;
+    cursor: pointer;
+    border: none;
+  }
+  form button:hover {
+    background-color: #374ac9;
+  }
+
+  /* Search Results */
+  .results-list ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+  }
+  .results-list li {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Cart button */
+  #cart-count {
+    background: red;
+    color: white;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 0 6px;
+    border-radius: 50%;
+    position: relative;
+    top: -10px;
+    left: -10px;
+    display: none;
+  }
+</style>
 </body>
 </html>
