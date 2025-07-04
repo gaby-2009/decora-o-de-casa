@@ -314,6 +314,28 @@
     </button>
   </div>
 
+   <form id="searchForm">
+    <input type="text" id="searchInput" placeholder="Digite algo e aperte Enter" />
+  </form>
+
+  <div id="resultado"></div>
+
+  <script>
+    const form = document.getElementById('searchForm');
+    const input = document.getElementById('searchInput');
+    const resultado = document.getElementById('resultado');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();  // Evita o recarregamento da página
+      const texto = input.value.trim();
+      if (texto) {
+        resultado.textContent = `Você pesquisou: ${texto}`;
+      } else {
+        resultado.textContent = '';
+      }
+    });
+  </script>
+
   <!-- Resultados da busca -->
   <div class="results-list" aria-live="polite" aria-atomic="true">
     <ul id="search-results"></ul>
