@@ -1,220 +1,667 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Busca de Produtos com Carrinho</title>
-  <style>
-    body {
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ideias | Minha Casa Decor</title>
+<style>
+     body {
       font-family: Arial, sans-serif;
-      padding: 2em;
+      padding: 30px;
       background: #f9f9f9;
     }
-
-    #search-input {
-      width: 250px;
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .search-results-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      max-height: 300px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      background: white;
-      position: absolute;
-      width: 250px;
-      z-index: 10;
-    }
-
-    .search-results-list li {
-      padding: 8px;
-      cursor: pointer;
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 20px auto;
       display: flex;
-      gap: 8px;
-      align-items: center;
+      border: 2px solid #333;
+      border-radius: 25px;
+      overflow: hidden;
+      background: white;
     }
-
-    .search-results-list li:hover,
-    .search-results-list li:focus {
-      background-color: #f0f0f0;
+    input[type="text"] {
+      flex: 1;
+      border: none;
+      padding: 10px 15px;
+      font-size: 16px;
       outline: none;
     }
-
-    .search-results-list img {
-      width: 48px;
-      height: 48px;
-      object-fit: cover;
-      border-radius: 4px;
+    button {
+      background: #333;
+      border: none;
+      color: white;
+      padding: 0 20px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    .cart-modal {
-      position: fixed;
-      top: 10%;
-      right: 10%;
-      width: 300px;
+    button:hover {
+      background: #555;
+    }
+    .results-list {
+      max-width: 600px;
+      margin: 0 auto;
       background: white;
-      border: 1px solid #ccc;
-      padding: 1em;
-      z-index: 20;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      border-radius: 6px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 150px;
+    }
+    .results-list ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    .results-list li {
+      display: flex;
+      align-items: center;
+      padding: 10px 5px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .results-list li:hover {
+      background-color: #f0f0f0;
+    }
+    .results-list li img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 15px;
+    }
+    .product-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .product-name {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .product-price {
+      color: #008000;
+      font-weight: 600;
     }
 
-    .hidden {
+    /* Lista de produtos (cards) */
+    #lista-produtos {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+      gap: 20px;
+    }
+    .produto-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      background: white;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+      transition: transform 0.15s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .produto-card:hover {
+      transform: scale(1.05);
+      border-color: #333;
+    }
+    .produto-card img {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .produto-nome {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .produto-preco {
+      color: #008000;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    /* Botão do carrinho fixo */
+    #cart-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    #cart-count {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: red;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 50%;
       display: none;
     }
 
-    #cart-list {
-      list-style: none;
-      padding-left: 0;
-      max-height: 200px;
+    /* Modal do Carrinho */
+    #cart-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1100;
+    }
+    #cart-modal.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #cart-modal > div {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
       overflow-y: auto;
-      margin-bottom: 1em;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
-
-    #cart-list li {
-      padding: 4px 0;
-      border-bottom: 1px solid #ddd;
-    }
-
-    #close-cart-btn {
-      float: right;
-      background: #e74c3c;
+    #close-cart {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 28px;
+      background: none;
       border: none;
-      color: white;
-      padding: 5px 10px;
       cursor: pointer;
-      border-radius: 4px;
+      color: #555;
       font-weight: bold;
+      transition: color 0.2s;
     }
-  </style>
+    #close-cart:hover {
+      color: #000;
+    }
+    #cart-items {
+      max-height: 250px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      padding-left: 0;
+      list-style: none;
+    }
+    #cart-items li {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    #cart-items li div.flex-1 {
+      flex: 1;
+    }
+    .quantidade-input {
+      width: 50px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 3px 6px;
+      text-align: center;
+    }
+    .remover-item {
+      background: none;
+      border: none;
+      color: red;
+      font-size: 22px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+    .remover-item:hover {
+      color: darkred;
+    }
+
+    /* Checkout form */
+    #checkout-form label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    #checkout-form input, 
+    #checkout-form textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      resize: vertical;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    #checkout-form input:focus, 
+    #checkout-form textarea:focus {
+      border-color: #2563eb;
+      outline: none;
+      box-shadow: 0 0 5px #2563eb;
+    }
+    #checkout-form button[type="submit"] {
+      background-color: #22c55e;
+      color: white;
+      font-weight: 700;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+    #checkout-form button[type="submit"]:hover {
+      background-color: #16a34a;
+    }
+  
+    .produto {
+      border: 1px solid #ccc;
+      margin: 10px 0;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .produto img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    #lista-produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 1rem;
+    padding: 0 1rem 2rem;
+  }
+  .produto-card {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 8px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+    transition: box-shadow 0.2s ease;
+  }
+  .produto-card:hover, .produto-card:focus {
+    box-shadow: 0 4px 6px rgb(0 0 0 / 0.15);
+    outline: none;
+  }
+  .produto-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  .produto-nome {
+    margin-top: 0.75rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  .produto-preco {
+    margin-top: 0.5rem;
+    font-weight: 700;
+    color: #1e40af;
+  }
+
+  /* Modal */
+  #cart-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    z-index: 9999;
+  }
+  #cart-modal.visible {
+    display: flex;
+  }
+  #cart-modal > div {
+    background: white;
+    max-width: 400px;
+    width: 100%;
+    border-radius: 8px;
+    padding: 1rem 1.5rem 1.5rem;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  #close-cart {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+  }
+  #cart-items {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+  }
+  #cart-items li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+  }
+  .quantidade-input {
+    width: 50px;
+    padding: 0.2rem;
+    margin-left: 0.5rem;
+  }
+  form label {
+    display: block;
+    margin-top: 0.75rem;
+  }
+  form input, form textarea, form button {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    font-size: 1rem;
+  }
+  form button {
+    background-color: #1e40af;
+    color: white;
+    font-weight: 700;
+    margin-top: 1rem;
+    cursor: pointer;
+    border: none;
+  }
+  form button:hover {
+    background-color: #374ac9;
+  }
+
+  /* Search Results */
+  .results-list ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+  }
+  .results-list li {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Cart button */
+  #cart-count {
+    background: red;
+    color: white;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 0 6px;
+    border-radius: 50%;
+    position: relative;
+    top: -10px;
+    left: -10px;
+    display: none;
+  }
+</style>
 </head>
-<body>
+<body class="bg-gray-50 font-sans">
+<header class="bg-white shadow-sm py-4">
+      <!-- Cabeçalho e navegação -->
+  <header class="bg-white shadow-sm py-4 mb-6">
+    <div class="container mx-auto px-4 flex justify-between items-center flex-wrap">
+      <a href="#" class="text-3xl font-bold text-gray-800 tracking-tight" aria-label="Minha Casa Decor - Home">Minha Casa Decor</a>
+      <nav class="hidden md:flex space-x-6" aria-label="Menu principal">
+        <a href="index.html" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Início</a>
+        <a href="produtos.html" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Produtos</a>
+        <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Categorias</a>
+        <a href="ideias.html" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Ideias</a>
+        <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Blog</a>
+        <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Sobre</a>
+        <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Contato</a>
+      </nav>
 
-  <label for="search-input">Buscar produtos:</label><br />
-  <input
-    id="search-input"
-    type="search"
-    placeholder="Busque por produtos..."
-    autocomplete="off"
-  />
-  <ul id="search-results" class="search-results-list"></ul>
+<div class="container">
+  <h1>Lista de Produtos</h1>
 
-  <!-- Modal do carrinho -->
-  <div id="cart-modal" class="cart-modal hidden" role="dialog" aria-modal="true" aria-labelledby="cart-title">
-    <button id="close-cart-btn" aria-label="Fechar carrinho">X</button>
-    <h2 id="cart-title">Carrinho</h2>
-    <ul id="cart-list"></ul>
-    <div><strong>Total:</strong> R$ <span id="cart-total">0,00</span></div>
+  <div id="search-container">
+    <input type="search" id="search-input" placeholder="Buscar produtos..." aria-label="Buscar produtos" />
   </div>
 
-  <script>
-    const produtos = [
-       { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" }, 
-       { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" }, 
-       { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
-       { nome: "Mesa Lateral", preco: 1308.00, imagem: "" }, 
-       { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
-       { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/89/19/8f/89198f377db9112b728cfdc8646cb2a5.jpg"},
-       { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" }, 
-       { nome: "Kit de Nicho", preco: 300.00, imagem: "" }, { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" }, 
-       { nome: "Espelho ondulado", preco: 150.00, imagem: "" }
-    ];
+  <div id="lista-produtos" role="list" aria-live="polite" aria-label="Lista de produtos">
+    <!-- Produtos aparecerão aqui -->
+  </div>
+</div>
 
-    let carrinho = [];
+<button id="cart-button" aria-haspopup="dialog" aria-controls="cart-modal" aria-expanded="false">
+  Carrinho <span id="cart-count" aria-live="polite">0</span>
+</button>
 
-    const searchInput = document.getElementById('search-input');
-    const searchResults = document.getElementById('search-results');
-    const cartModal = document.getElementById('cart-modal');
-    const cartList = document.getElementById('cart-list');
-    const cartTotal = document.getElementById('cart-total');
-    const closeCartBtn = document.getElementById('close-cart-btn');
+<div id="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title" tabindex="-1">
+  <header>
+    <span id="cart-modal-title">Seu Carrinho</span>
+    <button id="close-cart" aria-label="Fechar carrinho">&times;</button>
+  </header>
+  <ul id="cart-items">
+    <!-- Itens do carrinho -->
+  </ul>
+  <div id="cart-total">Total: R$ 0,00</div>
 
-    function atualizarModal() {
-      cartList.innerHTML = '';
-      let total = 0;
+  <form id="checkout-form" aria-label="Formulário de checkout">
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" required aria-required="true" />
 
-      carrinho.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.nome} - ${item.quantidade}x - R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}`;
-        cartList.appendChild(li);
-        total += item.preco * item.quantidade;
-      });
+    <label for="email">Email:</label>
+    <input type="email" id="email" required aria-required="true" />
 
-      cartTotal.textContent = total.toFixed(2).replace('.', ',');
+    <button type="submit">Finalizar Compra</button>
+  </form>
+</div>
+
+<script>
+  const produtos = [
+    { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
+    { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
+    { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
+    { nome: "Mesa Lateral", preco: 1308.00, imagem: "" },
+    { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
+    { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/89/19/8f/89198f377db9112b728cfdc8646cb2a5.jpg" },
+    { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
+    { nome: "Kit de Nicho", preco: 300.00, imagem: "" },
+    { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" },
+    { nome: "Espelho ondulado", preco: 284.90, imagem: "https://i.pinimg.com/736x/69/b9/d2/69b9d2a3567d8610f465e69e5f726d80.jpg" }
+  ];
+
+  const lista = document.getElementById('lista-produtos');
+  const cartButton = document.getElementById('cart-button');
+  const cartModal = document.getElementById('cart-modal');
+  const closeCartBtn = document.getElementById('close-cart');
+  const checkoutForm = document.getElementById('checkout-form');
+  const cartCount = document.getElementById('cart-count');
+  const cartItems = document.getElementById('cart-items');
+  const cartTotal = document.getElementById('cart-total');
+  const searchInput = document.getElementById('search-input');
+
+  let carrinho = [];
+
+  function mostrarProdutos(filtro = '') {
+    lista.innerHTML = '';
+    const filtrados = produtos.filter(p => p.nome.toLowerCase().includes(filtro.toLowerCase()));
+
+    if (filtrados.length === 0) {
+      lista.innerHTML = '<p>Nenhum produto encontrado.</p>';
+      return;
     }
 
-    function adicionarProduto(nome, preco) {
-      const idx = carrinho.findIndex(p => p.nome === nome);
-      if (idx >= 0) {
-        carrinho[idx].quantidade++;
-      } else {
-        carrinho.push({ nome, preco, quantidade: 1 });
-      }
-      atualizarModal();
-    }
+    filtrados.forEach(produto => {
+      const imagemSrc = produto.imagem
+        ? (produto.imagem.startsWith('http') 
+            ? produto.imagem 
+            : `./imagens/${produto.imagem}`)
+        : 'https://via.placeholder.com/250x180?text=Sem+Imagem';
 
-    function buscarProdutos() {
-      const termo = searchInput.value.trim().toLowerCase();
-      searchResults.innerHTML = '';
-
-      if (!termo) return;
-
-      const resultados = produtos.filter(p => p.nome.toLowerCase().includes(termo));
-
-      if (resultados.length === 0) {
-        searchResults.innerHTML = '<li>Nenhum produto encontrado.</li>';
-        return;
-      }
-
-      resultados.forEach(p => {
-        const li = document.createElement('li');
-        li.tabIndex = 0;
-        li.innerHTML = `
-          <img src="${p.imagem}" alt="${p.nome}" />
-          <div>
-            <strong>${p.nome}</strong><br />
-            <small>R$ ${p.preco.toFixed(2).replace('.', ',')}</small>
-          </div>
-        `;
-
-        li.addEventListener('click', () => {
-          adicionarProduto(p.nome, p.preco);
-          cartModal.classList.remove('hidden');
-          searchResults.innerHTML = '';
-          searchInput.value = '';
-        });
-
-        li.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            li.click();
-          }
-        });
-
-        searchResults.appendChild(li);
-      });
-    }
-
-    searchInput.addEventListener('input', buscarProdutos);
-
-    closeCartBtn.addEventListener('click', () => {
-      cartModal.classList.add('hidden');
+      const card = document.createElement('div');
+      card.className = 'produto-card';
+      card.tabIndex = 0;
+      card.innerHTML = `
+        <img src="${imagemSrc}" alt="${produto.nome}" />
+        <div class="produto-nome">${produto.nome}</div>
+        <div class="produto-preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</div>
+        <button class="add-to-cart mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" 
+          data-produto="${produto.nome}" data-preco="${produto.preco}" aria-label="Adicionar ${produto.nome} ao carrinho">
+          Adicionar ao carrinho
+        </button>
+      `;
+      lista.appendChild(card);
     });
 
-    // Fechar modal com ESC
-    window.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && !cartModal.classList.contains('hidden')) {
-        cartModal.classList.add('hidden');
-      }
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nome = btn.dataset.produto;
+        const preco = Number(btn.dataset.preco);
+        adicionarProduto(nome, preco);
+        alert(`${nome} adicionado ao carrinho!`);
+      });
     });
-  </script>
+  }
 
+  function atualizarContador() {
+    const count = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+    cartCount.textContent = count;
+    cartCount.style.display = count === 0 ? 'none' : 'inline-block';
+    cartButton.setAttribute('aria-expanded', cartModal.classList.contains('visible'));
+  }
+
+  function atualizarModal() {
+    cartItems.innerHTML = '';
+    if (carrinho.length === 0) {
+      cartItems.innerHTML = '<li class="text-gray-600">Seu carrinho está vazio.</li>';
+      cartTotal.textContent = 'Total: R$ 0,00';
+      return;
+    }
+
+    carrinho.forEach((item, i) => {
+      const li = document.createElement('li');
+      li.className = 'border-b py-2 flex justify-between items-center space-x-2';
+
+      li.innerHTML = `
+        <div class="flex-1">
+          <strong>${item.nome}</strong><br />
+          R$ ${item.preco.toFixed(2).replace('.', ',')} x 
+          <input type="number" min="1" value="${item.quantidade}" data-index="${i}" class="quantidade-input" aria-label="Quantidade de ${item.nome}" />
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="font-semibold">R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
+          <button data-index="${i}" class="remover-item" aria-label="Remover ${item.nome} do carrinho">&times;</button>
+        </div>
+      `;
+      cartItems.appendChild(li);
+    });
+
+    const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+    cartTotal.textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+
+    document.querySelectorAll('.remover-item').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const idx = Number(e.target.dataset.index);
+        carrinho.splice(idx, 1);
+        atualizarContador();
+        atualizarModal();
+      });
+    });
+
+    document.querySelectorAll('.quantidade-input').forEach(input => {
+      input.addEventListener('change', e => {
+        const idx = Number(e.target.dataset.index);
+        let val = parseInt(e.target.value);
+        if (isNaN(val) || val < 1) {
+          val = 1;
+          e.target.value = 1;
+        }
+        carrinho[idx].quantidade = val;
+        atualizarContador();
+        atualizarModal();
+      });
+    });
+  }
+
+  function adicionarProduto(nome, preco) {
+    const idx = carrinho.findIndex(p => p.nome === nome);
+    if (idx >= 0) {
+      carrinho[idx].quantidade++;
+    } else {
+      carrinho.push({ nome, preco, quantidade: 1 });
+    }
+    atualizarContador();
+    atualizarModal();
+    cartModal.classList.add('visible');
+  }
+
+  cartButton.addEventListener('click', () => {
+    atualizarModal();
+    cartModal.classList.toggle('visible');
+    atualizarContador();
+  });
+
+  closeCartBtn.addEventListener('click', () => {
+    cartModal.classList.remove('visible');
+    atualizarContador();
+  });
+
+  checkoutForm.addEventListener('submit', e => {
+    e.preventDefault();
+    if (carrinho.length === 0) {
+      alert('Seu carrinho está vazio.');
+      return;
+    }
+    const nome = document.getElementById('nome').value.trim();
+    const email = document.getElementById('email').value.trim();
+    if (!nome || !email) {
+      alert('Por favor, preencha nome e e-mail.');
+      return;
+    }
+    alert(`Obrigado pela compra, ${nome}! Você receberá as informações no e-mail ${email}.`);
+    carrinho = [];
+    atualizarContador();
+    atualizarModal();
+    cartModal.classList.remove('visible');
+    checkoutForm.reset();
+  });
+
+  searchInput.addEventListener('input', e => {
+    const filtro = e.target.value;
+    mostrarProdutos(filtro);
+  });
+
+  mostrarProdutos();
+  atualizarContador();
+</script>
 </body>
 </html>
