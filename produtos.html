@@ -283,6 +283,23 @@
       background-color: #16a34a;
     }
   </style>
+
+<style>
+    .produto {
+      border: 1px solid #ccc;
+      margin: 10px 0;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .produto img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+  </style>
+
 </head>
 <body>
 
@@ -314,25 +331,58 @@
     </button>
   </div>
 
-   <form id="searchForm">
-    <input type="text" id="searchInput" placeholder="Digite algo e aperte Enter" />
+    <form id="searchForm">
+    <input type="text" id="searchInput" placeholder="Pesquise um produto..." />
   </form>
 
   <div id="resultado"></div>
 
   <script>
+    const produtos = [
+      { nome: "Cadeira Elegante", preco: 299.90, imagem: "c10223f411c47646f95ae8fa73fdd033.jpg" },
+      { nome: "Mesa de Centro", preco: 499.00, imagem: "3defe37aea1ea4b6525aa8893a2d1877.jpg" },
+      { nome: "Poltrona", preco: 199.99, imagem: "0c1a0af9d7a10f13f3df49d386b0fe2a.jpg" },
+      { nome: "Mesa Lateral", preco: 1308.00, imagem: "" },
+      { nome: "Sofá Redondo", preco: 2000.00, imagem: "https://i.pinimg.com/736x/76/b9/32/76b9324d0b90a14f2a1465f8c8973e60.jpg" },
+      { nome: "Rede Cadeira de Balanço", preco: 899.90, imagem: "https://i.pinimg.com/736x/89/19/8f/89198f377db9112b728cfdc8646cb2a5.jpg" },
+      { nome: "Recamier Banco Puff com Bau", preco: 550.00, imagem: "https://i.pinimg.com/736x/5e/05/5d/5e055d59878b03de8154dd0a4c051581.jpg" },
+      { nome: "Kit de Nicho", preco: 300.00, imagem: "" },
+      { nome: "Frigobar", preco: 499.99, imagem: "https://i.pinimg.com/736x/99/2d/74/992d74f391b10d4802fb7b3f01b8b7c2.jpg" },
+      { nome: "Espelho ondulado", preco: 150.00, imagem: "" }
+    ];
+
     const form = document.getElementById('searchForm');
     const input = document.getElementById('searchInput');
     const resultado = document.getElementById('resultado');
 
     form.addEventListener('submit', function(event) {
-      event.preventDefault();  // Evita o recarregamento da página
-      const texto = input.value.trim();
-      if (texto) {
-        resultado.textContent = `Você pesquisou: ${texto}`;
-      } else {
-        resultado.textContent = '';
+      event.preventDefault(); // evita recarregar a página
+
+      const pesquisa = input.value.trim().toLowerCase();
+
+      if (!pesquisa) {
+        resultado.innerHTML = '<p>Por favor, digite algo para pesquisar.</p>';
+        return;
       }
+
+      // Filtra os produtos que contêm o texto pesquisado no nome
+      const encontrados = produtos.filter(p => p.nome.toLowerCase().includes(pesquisa));
+
+      if (encontrados.length === 0) {
+        resultado.innerHTML = '<p>Nenhum produto encontrado.</p>';
+        return;
+      }
+
+      // Monta o HTML para mostrar os produtos encontrados
+      resultado.innerHTML = encontrados.map(p => `
+        <div class="produto">
+          <img src="${p.imagem ? p.imagem : 'https://via.placeholder.com/100?text=Sem+imagem'}" alt="${p.nome}">
+          <div>
+            <h3>${p.nome}</h3>
+            <p>Preço: R$ ${p.preco.toFixed(2).replace('.', ',')}</p>
+          </div>
+        </div>
+      `).join('');
     });
   </script>
 
