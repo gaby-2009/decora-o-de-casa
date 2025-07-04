@@ -282,9 +282,7 @@
     #checkout-form button[type="submit"]:hover {
       background-color: #16a34a;
     }
-  </style>
-
-<style>
+  
     .produto {
       border: 1px solid #ccc;
       margin: 10px 0;
@@ -298,7 +296,7 @@
       object-fit: cover;
       margin-right: 15px;
     }
-  </style>
+ </style>
 
 </head>
 <body>
@@ -324,15 +322,14 @@
   </header>
 
   <!-- Pesquisa -->
-  <div class="search-container">
+    <form id="searchForm">
+    <input type="text" id="searchInput" placeholder="Pesquise um produto..." />
+    <div class="search-container">
     <input type="text" id="search-input" placeholder="Busque um produto, categoria ou palavra-chave" aria-label="Campo de busca" />
     <button id="search-button" aria-label="Buscar">
       🔍
     </button>
   </div>
-
-    <form id="searchForm">
-    <input type="text" id="searchInput" placeholder="Pesquise um produto..." />
   </form>
 
   <div id="resultado"></div>
